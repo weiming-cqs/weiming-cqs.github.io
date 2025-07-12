@@ -175,9 +175,35 @@
     <!-- 页脚 -->
     <footer>
 
-    <p>访问人数: < img src="https://visitor-badge.glitch.me/badge?page_id=YOUR_PAGE_ID" alt="访问人数"></p >
+   <p>访问人数: <span id="visitCount" class="counter">加载中...</span></p >
+    </header>
     <p>© 2023 未明的个人网站 | 用 ❤️ 和代码构建</p >
 </footer>
 
+    <!-- 访问计数器 -->
+    <script>
+        // 使用localStorage实现访问计数（仅客户端）
+        function updateCounter() {
+            // 从localStorage获取访问次数
+            let count = localStorage.getItem('visitCount');
+            
+            // 如果是第一次访问，初始化为1
+            if (!count) {
+                count = 1;
+            } else {
+                // 否则增加计数
+                count = parseInt(count) + 1;
+            }
+            
+            // 保存新的计数
+            localStorage.setItem('visitCount', count);
+            
+            // 更新页面显示
+            document.getElementById('visitCount').textContent = count;
+        }
+        
+        // 页面加载时更新计数器
+        window.addEventListener('DOMContentLoaded', updateCounter);
+    </script>
 </body>
 </html>
