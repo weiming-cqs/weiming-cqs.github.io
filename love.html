@@ -184,7 +184,7 @@
             <i class="fas fa-heart"></i>
         </div>
         <div class="message">
-            <p>亲爱的 <span class="special-name" id="specialName">[名字]</span>，</p >
+            <p>亲爱的，</p >
             <p>从遇见你的那一刻起，我的世界就变得不一样了。</p >
             <p>你的笑容是我每天最期待的风景，你的声音是我心中最美的旋律。</p >
             <p>每一次和你相处，都让我感到无比幸福和温暖。</p >
@@ -229,13 +229,7 @@
             }
         }
         
-        // 更新特别的人的名字
-        function updateSpecialName() {
-            const name = prompt('请输入你特别的人的名字:', '');
-            if (name && name.trim() !== '') {
-                document.getElementById('specialName').textContent = name;
-            }
-        }
+       
       // 表白按钮事件
         document.getElementById('loveBtn').addEventListener('click', function() {
             this.style.display = 'none';
