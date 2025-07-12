@@ -1,0 +1,292 @@
+ <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的心意</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #5a2a27;
+        }
+      .container {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 30px;
+            color: #d94f5c;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .heart-icon {
+            color: #ff6b6b;
+            font-size: 4rem;
+            margin: 20px 0;
+            animation: heartbeat 1.5 infinite;
+        }
+      .message {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+        
+        .special-name {
+            color: #d94f5c;
+            font-weight: bold;
+            font-size: 1.7rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 20px 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3 ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+      
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+        }
+        
+        .response-buttons {
+            margin-top: 30px;
+        }
+        
+        /* 心形动画 */
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            5% { transform: scale(1.1); }
+            10% { transform: scale(1); }
+            15% { transform: scale(1.15); }
+            50% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+/* 背景漂浮心形 */
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .heart {
+            position: absolute;
+            color: rgba(255, 107, 107, 0.5);
+            font-size: 20px;
+            animation: float 15 infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.5;
+            }
+    100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .message {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+                display: block;
+                margin: 15px auto;
+                width: 80%;
+            }
+        }
+       @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .message {
+                font-size: 1.1rem;
+            }
+            
+            .heart-icon {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景漂浮心形 -->
+    <div class="hearts" id="hearts"></div>
+    
+    <!-- 主要内容 -->
+    <div class="container">
+        <h1>致我特别的人</h1>
+        
+        <div class="heart-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="message">
+            <p>亲爱的 <span class="special-name" id="specialName">[名字]</span>，</p >
+            <p>从遇见你的那一刻起，我的世界就变得不一样了。</p >
+            <p>你的笑容是我每天最期待的风景，你的声音是我心中最美的旋律。</p >
+            <p>每一次和你相处，都让我感到无比幸福和温暖。</p >
+            <p>我想告诉你，我喜欢你，比想象中还要多。</p >
+        </div>
+        
+        <div class="heart-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        
+        <button class="btn" id="loveBtn">
+            <i class="fas fa-heart"></i> 我喜欢你
+        </button>
+        
+        <div class="response-buttons" id="responseButtons" style="display: none;">
+           <button class="btn" id="yesBtn">
+                <i class="fas fa-check"></i> 我也喜欢你
+            </button>
+            <button class="btn" id="noBtn" style="background: linear-gradient(to right, #6c5ce7, #a29bfe);">
+                <i class="fas fa-times"></i> 考虑一下
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // 创建漂浮的心形
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const heartCount = 30;
+            
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '<i class="fas fa-heart"></i>';
+              // 随机位置和大小
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                
+                heartsContainer.appendChild(heart);
+            }
+        }
+        
+        // 更新特别的人的名字
+        function updateSpecialName() {
+            const name = prompt('请输入你特别的人的名字:', '');
+            if (name && name.trim() !== '') {
+                document.getElementById('specialName').textContent = name;
+            }
+        }
+      // 表白按钮事件
+        document.getElementById('loveBtn').addEventListener('click', function() {
+            this.style.display = 'none';
+            document.getElementById('responseButtons').style.display = 'block';
+        });
+        
+        // "我也喜欢你"按钮事件
+        document.getElementById('yesBtn').addEventListener('click', function() {
+            document.querySelector('.container').innerHTML = `
+              <h1>❤️ 太棒了！ ❤️</h1>
+                <div class="heart-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="message">
+                    <p>这是我今天听到的最美的消息！</p >
+                    <p>让我们开始这段美好的旅程吧！</p >
+                    <p>你愿意和我一起创造更多美好回忆吗？</p >
+                </div>
+                <div class="heart-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <button class="btn" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> 再表白一次
+                </button>
+            `;
+        });
+       // "考虑一下"按钮事件
+        document.getElementById('noBtn').addEventListener('click', function() {
+            document.querySelector('.container').innerHTML = `
+                <h1>❤️ 我会等待 ❤️</h1>
+                <div class="heart-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="message">
+                    <p>感谢你的坦诚！</p >
+                    <p>我会尊重你的想法，并继续真诚地对待你。</p >
+                    <p>希望有一天，我能成为你心中的那个特别的人。</p >
+                </div>
+                <div class="heart-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <button class="btn" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> 再表白一次
+                </button>
+            `;
+        });
+      // 页面加载时执行
+        window.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            setTimeout(updateSpecialName, 1000);
+        });
+    </script>
+</body>
+</html>
