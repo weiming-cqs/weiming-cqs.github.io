@@ -3,43 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人空间 | 关于我</title>
+    <title>w未明 - 关于我</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background: linear-gradient(to bottom, #3498db, #87CEEB, #ffffff);
-            color: #2c3e50;
+            background: linear-gradient(135deg, #1e5799, #2989d8, #7db9e8);
+            color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
         
-        /* 气泡背景 */
+        /* 气泡动画 */
         .bubbles {
-            position: absolute;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            pointer-events: none;
             overflow: hidden;
         }
         
         .bubble {
             position: absolute;
-            border-radius: 50%;
+            bottom: -100px;
             background: rgba(255, 255, 255, 0.2);
-            animation: float 8s infinite ease-in-out;
+            border-radius: 50%;
+            animation: rise linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
-        @keyframes float {
-            0% { transform: translateY(100vh) scale(0); }
-            100% { transform: translateY(-100px) scale(1); }
+        @keyframes rise {
+            to {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
         }
         
         /* 导航栏 */
@@ -47,446 +54,596 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #2980b9;
-            text-decoration: none;
             display: flex;
             align-items: center;
+            gap: 10px;
         }
         
         .logo i {
-            color: #e74c3c;
-            margin-right: 10px;
+            color: #64e3ff;
         }
         
         .nav-links {
             display: flex;
-            list-style: none;
-        }
-        
-        .nav-links li {
-            margin-left: 25px;
-        }
-        
-        .nav-links a {
-            text-decoration: none;
-            color: #34495e;
-            font-weight: 500;
-            transition: all 0.3s;
-            position: relative;
-            padding: 5px 0;
-        }
-        
-        .nav-links a:hover {
-            color: #e74c3c;
-        }
-        
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #e74c3c;
-            transition: width 0.3s ease;
-        }
-        
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-        
-        /* 页面标题 */
-        .page-header {
-            text-align: center;
-            padding: 80px 10% 50px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .page-header h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .page-header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: #e74c3c;
-            border-radius: 2px;
-        }
-        
-        .page-header p {
-            font-size: 1.2rem;
-            color: #34495e;
-            line-height: 1.8;
-            margin-top: 40px;
-        }
-        
-        /* 内容区域 */
-        .content-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 5% 100px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
         }
         
-        /* 个人信息卡片 */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.85);
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 主内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .page-title h1 {
+            font-size: 3rem;
+            display: inline-block;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #1e5799, #2989d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        .page-title::before,
+        .page-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64e3ff, transparent);
+        }
+        
+        .page-title::before {
+            left: 0;
+        }
+        
+        .page-title::after {
+            right: 0;
+        }
+        
+        /* 信息卡片 */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            transition: transform 0.4s, box-shadow 0.4s;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
         }
         
-        .profile-card:hover {
+        .card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.15);
         }
         
-        .profile-card h2 {
-            font-size: 1.8rem;
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #64e3ff, #7d7dff);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
             margin-bottom: 25px;
-            color: #e74c3c;
-            display: flex;
-            align-items: center;
             padding-bottom: 15px;
-            border-bottom: 2px solid #f1f2f6;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .profile-card h2 i {
+        .card-header i {
+            font-size: 2.5rem;
             margin-right: 15px;
+            color: #64e3ff;
         }
         
-        .info-item {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #f1f2f6;
+        .card-header h2 {
+            font-size: 1.8rem;
         }
         
-        .info-item:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border: none;
+        .card-content ul {
+            list-style: none;
+            padding: 0;
         }
         
-        .info-title {
+        .card-content li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
             font-size: 1.1rem;
-            color: #3498db;
+            line-height: 1.6;
+        }
+        
+        .card-content li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #64e3ff;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, #64e3ff, #7d7dff);
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 20px 40px;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .timeline-content h3 {
+            color: #64e3ff;
             margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: #64e3ff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+        
+        /* 目标卡片 */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .goal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .goal-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .goal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(100, 227, 255, 0.2);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            font-weight: 600;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #64e3ff;
         }
         
-        .info-title i {
-            margin-right: 10px;
+        .goal-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #64e3ff;
         }
         
-        .info-content {
+        .goal-card p {
             font-size: 1.1rem;
-            line-height: 1.7;
-            color: #2c3e50;
-            padding-left: 25px;
+            opacity: 0.9;
+            line-height: 1.6;
         }
         
-        /* 技能展示 */
-        .skills-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .skill {
-            background: rgba(52, 152, 219, 0.1);
-            padding: 15px 10px;
-            border-radius: 10px;
+        /* 页脚 */
+        footer {
             text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-        }
-        
-        .skill:hover {
-            background: rgba(52, 152, 219, 0.2);
-            transform: translateY(-5px);
-        }
-        
-        .skill i {
-            font-size: 2rem;
-            color: #3498db;
-            margin-bottom: 10px;
-        }
-        
-        .skill h3 {
-            font-size: 1rem;
-            color: #2c3e50;
-        }
-        
-        /* 语言能力 */
-        .languages {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .language {
-            background: rgba(231, 76, 60, 0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #e74c3c;
-            border: 1px solid rgba(231, 76, 60, 0.2);
+            padding: 30px;
+            margin-top: 80px;
+            background: rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            opacity: 0.8;
         }
         
         /* 响应式设计 */
-        @media (max-width: 992px) {
-            .page-header h1 {
-                font-size: 2.5rem;
+        @media (max-width: 900px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+                left: 0 !important;
+            }
+            
+            .timeline-item::after {
+                left: 20px !important;
+                right: auto;
             }
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
             .nav-links {
-                display: none;
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             
-            .page-header {
-                padding: 60px 5% 30px;
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.95rem;
             }
             
-            .content-section {
-                gap: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .page-header h1 {
-                font-size: 2rem;
+            .page-title h1 {
+                font-size: 2.2rem;
             }
             
-            .profile-card {
+            .page-title::before,
+            .page-title::after {
+                width: 20%;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
                 padding: 20px;
             }
-        }
-        
-        /* 天津特色 */
-        .tianjin {
-            display: inline-block;
-            background: rgba(231, 76, 60, 0.1);
-            color: #c0392b;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <!-- 气泡背景 -->
-    <div class="bubbles" id="bubbles"></div>
+    <div class="bubbles"></div>
     
     <!-- 导航栏 -->
     <nav class="navbar">
-        <a href="index.html" class="logo">
-            <i class="fas fa-user"></i>我的空间
-        </a>
-        <ul class="nav-links">
-            <li><a href="index.html">首页</a></li>
-            <li><a href="2.html" class="active">关于我</a></li>
-            <li><a href="3.html">作品集</a></li>
-            <li><a href="4.html">联系我</a></li>
-            <li><a href="5.html">特别心意</a></li>
-        </ul>
+        <div class="logo">
+            <i class="fas fa-user"></i>
+            <span>未明 | 关于我</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="#" class="active">关于我</a>
+            <a href="3.html">作品集</a>
+            <a href="4.html">联系我</a>
+            <a href="5.html">特别心意</a>
+        </div>
     </nav>
     
-    <!-- 页面标题 -->
-    <section class="page-header">
-        <h1>关于<span style="color: #e74c3c;">我</span></h1>
-        <p>你好！我是一个热爱编程和音乐的初中生。在这里，你可以了解我的兴趣爱好和技能，欢迎来到我的个人空间！</p>
-    </section>
-    
-    <!-- 内容区域 -->
-    <section class="content-section">
-        <!-- 基本信息卡片 -->
-        <div class="profile-card">
-            <h2><i class="fas fa-user"></i> 基本信息</h2>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-map-marker-alt"></i> 所在地</div>
-                <div class="info-content">
-                    天津
-                    <div class="tianjin">天津人</div>
+    <!-- 主内容区 -->
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1>关于我</h1>
+        </div>
+        
+        <!-- 信息卡片 -->
+        <div class="info-cards">
+            <!-- 基本信息卡片 -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-info-circle"></i>
+                    <h2>基本信息</h2>
+                </div>
+                <div class="card-content">
+                    <ul>
+                        <li><strong>所在地：</strong>天津（天津人）</li>
+                        <li><strong>学校：</strong>不知道</li>
+                        <li><strong>语言能力：</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>中文（母语）</li>
+                                <li>英语（基础）</li>
+                                <li>德语（基础）</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
             
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-graduation-cap"></i> 学校</div>
-                <div class="info-content">
-                    天津市某中学初中部
+            <!-- 兴趣爱好卡片 -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-heart"></i>
+                    <h2>兴趣爱好</h2>
                 </div>
-            </div>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-language"></i> 语言能力</div>
-                <div class="languages">
-                    <div class="language">中文（母语）</div>
-                    <div class="language">英语（基础）</div>
-                    <div class="language">德语（基础）</div>
+                <div class="card-content">
+                    <ul>
+                        <li><strong>阅读：</strong>喜欢科幻、玄幻和历史类小说</li>
+                        <li><strong>音乐：</strong>学习钢琴和吉他</li>
+                        <li><strong>其他爱好：</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>编程项目</li>
+                                <li>听音乐</li>
+                                <li>户外活动</li>
+                                <li>自由搏击</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
         
         <!-- 编程技能卡片 -->
-        <div class="profile-card">
-            <h2><i class="fas fa-laptop-code"></i> 编程技能</h2>
-            
-            <div class="skills-container">
-                <div class="skill">
-                    <i class="fab fa-html5"></i>
-                    <h3>HTML/CSS</h3>
-                </div>
-                
-                <div class="skill">
-                    <i class="fab fa-java"></i>
-                    <h3>Java</h3>
-                </div>
-                
-                <div class="skill">
-                    <i class="fas fa-code"></i>
-                    <h3>C++</h3>
-                </div>
-                
-                <div class="skill">
-                    <i class="fab fa-python"></i>
-                    <h3>Python</h3>
-                </div>
-                
-                <div class="skill">
-                    <i class="fas fa-puzzle-piece"></i>
-                    <h3>图形化编程</h3>
-                </div>
+        <div class="card" style="margin-bottom: 50px;">
+            <div class="card-header">
+                <i class="fas fa-code"></i>
+                <h2>编程技能</h2>
             </div>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-lightbulb"></i> 学习经历</div>
-                <div class="info-content">
-                    从小学开始接触编程，参加过多次编程比赛并得奖
+            <div class="card-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <h3 style="color: #64e3ff; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">编程语言</h3>
+                        <ul>
+                            <li>HTML/CSS</li>
+                            <li>Java</li>
+                            <li>C++</li>
+                            <li>Python</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: #64e3ff; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">图形化编程</h3>
+                        <ul>
+                            <li>Processing</li>
+                            <li>Scratch</li>
+                            <li>游戏开发</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: #64e3ff; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">学习经历</h3>
+                        <p style="line-height: 1.6; margin-left: 0;">从小学开始接触编程，参加过多次编程比赛并获奖</p>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <!-- 兴趣爱好卡片 -->
-        <div class="profile-card">
-            <h2><i class="fas fa-heart"></i> 兴趣爱好</h2>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-book"></i> 阅读</div>
-                <div class="info-content">
-                    喜欢科幻、玄幻和历史类小说
+        <!-- 时间线 -->
+        <h2 style="text-align: center; font-size: 2.2rem; margin: 60px 0 40px; color: #64e3ff;">长期目标</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3>编程目标</h3>
+                    <p>开发一个小型游戏应用，结合图形化编程和游戏设计知识，创造有趣且富有挑战性的游戏体验。</p>
                 </div>
             </div>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-music"></i> 音乐</div>
-                <div class="info-content">
-                    学习钢琴和吉他
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3>音乐目标</h3>
+                    <p>建立自己的乐队，与志同道合的音乐爱好者一起创作和表演，分享音乐带来的快乐。</p>
                 </div>
             </div>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-gamepad"></i> 其他爱好</div>
-                <div class="info-content">
-                    编程项目、听音乐、户外活动、自由搏击
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3>语言目标</h3>
+                    <p>提高英语口语能力，达到流利交流的水平，为未来的国际交流和学习打下基础。</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <h3>写作目标</h3>
+                    <p>创作自己的小说，融合科幻和玄幻元素，创造一个引人入胜的奇幻世界。</p>
                 </div>
             </div>
         </div>
         
-        <!-- 近期目标卡片 -->
-        <div class="profile-card">
-            <h2><i class="fas fa-flag"></i> 近期目标</h2>
-            
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-code"></i> 编程目标</div>
-                <div class="info-content">
-                    开发一个小型游戏应用
+        <!-- 目标卡片 -->
+        <div class="goals-grid">
+            <div class="goal-card">
+                <div class="goal-icon">
+                    <i class="fas fa-gamepad"></i>
                 </div>
+                <h3>游戏开发</h3>
+                <p>计划开发一款结合冒险与解谜元素的3D游戏</p>
             </div>
             
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-music"></i> 音乐目标</div>
-                <div class="info-content">
-                    建立自己的乐队
+            <div class="goal-card">
+                <div class="goal-icon">
+                    <i class="fas fa-music"></i>
                 </div>
+                <h3>乐队组建</h3>
+                <p>寻找3-4名乐队成员，共同创作原创摇滚</p>
             </div>
             
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-globe"></i> 语言目标</div>
-                <div class="info-content">
-                    提高英语口语能力
+            <div class="goal-card">
+                <div class="goal-icon">
+                    <i class="fas fa-language"></i>
                 </div>
+                <h3>语言学习</h3>
+                <p>每日练习英语口语，目标通过PET考试</p>
             </div>
             
-            <div class="info-item">
-                <div class="info-title"><i class="fas fa-book"></i> 写作目标</div>
-                <div class="info-content">
-                    写出自己的小说
+            <div class="goal-card">
+                <div class="goal-icon">
+                    <i class="fas fa-book"></i>
                 </div>
+                <h3>小说创作</h3>
+                <p>完成一部10万字的长篇玄幻小说</p>
             </div>
         </div>
-    </section>
+    </div>
     
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 未明 - 学生开发者 | 探索无限可能</p>
+    </footer>
+
     <script>
-        // 创建气泡背景
+        // 气泡动画生成
         function createBubbles() {
-            const bubblesContainer = document.getElementById('bubbles');
-            const bubbleCount = 20;
+            const bubblesContainer = document.querySelector('.bubbles');
+            const bubbleCount = 30;
             
             for (let i = 0; i < bubbleCount; i++) {
                 const bubble = document.createElement('div');
                 bubble.classList.add('bubble');
                 
-                // 随机大小和位置
-                const size = Math.random() * 100 + 20;
-                bubble.style.width = size + 'px';
-                bubble.style.height = size + 'px';
-                bubble.style.left = Math.random() * 100 + 'vw';
+                // 随机大小 (10px 到 80px)
+                const size = Math.random() * 70 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
                 
-                // 随机动画延迟和持续时间
-                bubble.style.animationDelay = Math.random() * 5 + 's';
-                bubble.style.animationDuration = (Math.random() * 10 + 8) + 's';
+                // 随机位置
+                bubble.style.left = `${Math.random() * 100}%`;
+                
+                // 随机动画时长 (8s 到 20s)
+                const duration = Math.random() * 12 + 8;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // 随机动画延迟 (0s 到 5s)
+                const delay = Math.random() * 5;
+                bubble.style.animationDelay = `${delay}s`;
+                
+                // 随机透明度
+                bubble.style.opacity = Math.random() * 0.4 + 0.1;
                 
                 bubblesContainer.appendChild(bubble);
             }
         }
         
-        // 页面加载时创建气泡
-        window.addEventListener('DOMContentLoaded', createBubbles);
+        // 初始化页面
+        window.onload = function() {
+            createBubbles();
+            
+            // 为所有卡片添加悬停效果监听
+            const cards = document.querySelectorAll('.card, .goal-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = card.classList.contains('card') 
+                        ? 'translateY(-10px)' 
+                        : 'translateY(-10px)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // 设置当前页面导航项为激活状态
+            const currentPage = document.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (currentPage === linkPage || (currentPage === '' && linkPage === 'index.html')) {
+                    link.style.background = 'rgba(100, 227, 255, 0.3)';
+                    link.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                }
+            });
+        };
     </script>
 </body>
 </html>
