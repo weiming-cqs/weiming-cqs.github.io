@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>娱乐中心 | 未明工作室</title>
+    <title>娱乐中心 | 恐龙跑酷游戏</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -47,7 +47,7 @@
             100% { transform: translateY(-1000px) scale(1.5); opacity: 0; }
         }
 
-        /* 导航栏优化 - 基于第二张图片 */
+        /* 导航栏优化 */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -140,7 +140,7 @@
             border-radius: 4px;
         }
 
-        /* 游戏中心样式 - 移动端优化 */
+        /* 游戏中心样式 */
         .games-container {
             display: flex;
             flex-direction: column;
@@ -390,7 +390,7 @@
     <!-- 气泡背景 -->
     <div class="bubbles" id="bubbles"></div>
     
-    <!-- 导航栏 - 基于第三张图片 -->
+    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-gamepad"></i>
@@ -407,43 +407,10 @@
     </nav>
 
     <!-- 页面标题 -->
-    <h1 class="page-title"><i class="fas fa-gamepad"></i> 游戏娱乐中心</h1>
+    <h1 class="page-title"><i class="fas fa-gamepad"></i> 恐龙跑酷游戏</h1>
 
     <!-- 游戏区 -->
     <div class="games-container">
-        <!-- 贪吃蛇游戏 -->
-        <div class="game-card">
-            <div class="game-header">
-                <i class="fas fa-snake"></i> 贪吃蛇大作战
-            </div>
-            <div class="game-content">
-                <div class="score-container" id="snakeScore">
-                    <i class="fas fa-star"></i> 得分: 0
-                </div>
-                <div class="game-canvas-container">
-                    <canvas id="snakeCanvas" class="game-canvas" width="480" height="320"></canvas>
-                    <div class="game-over" id="snakeGameOver">
-                        <h2><i class="fas fa-skull"></i> 游戏结束</h2>
-                        <p style="margin-bottom: 25px; font-size: 1.2rem;">最终得分: <span id="snakeFinalScore">0</span></p>
-                        <button class="btn" id="snakeRestart"><i class="fas fa-redo"></i> 重新开始</button>
-                    </div>
-                </div>
-                <div class="instructions">
-                    <p>控制蛇吃掉食物，避免撞到墙壁或自己的身体！</p>
-                </div>
-                <div class="mobile-controls" id="snakeControls">
-                    <button class="mobile-btn" id="snakeUp"><i class="fas fa-arrow-up"></i></button>
-                    <button class="mobile-btn" id="snakeLeft"><i class="fas fa-arrow-left"></i></button>
-                    <button class="mobile-btn" id="snakeDown"><i class="fas fa-arrow-down"></i></button>
-                    <button class="mobile-btn" id="snakeRight"><i class="fas fa-arrow-right"></i></button>
-                </div>
-                <div class="controls">
-                    <button class="btn" id="snakeBtn"><i class="fas fa-play"></i> 开始游戏</button>
-                    <button class="btn" id="snakePause" style="display: none;"><i class="fas fa-pause"></i> 暂停游戏</button>
-                </div>
-            </div>
-        </div>
-
         <!-- 恐龙游戏 -->
         <div class="game-card">
             <div class="game-header">
@@ -454,7 +421,7 @@
                     <i class="fas fa-trophy"></i> 得分: 0
                 </div>
                 <div class="game-canvas-container">
-                    <canvas id="dinoCanvas" class="game-canvas" width="480" height="320"></canvas>
+                    <canvas id="dinoCanvas" class="game-canvas" width="800" height="400"></canvas>
                     <div class="game-over" id="dinoGameOver">
                         <h2><i class="fas fa-skull"></i> 游戏结束</h2>
                         <p style="margin-bottom: 25px; font-size: 1.2rem;">最终得分: <span id="dinoFinalScore">0</span></p>
@@ -462,7 +429,7 @@
                     </div>
                 </div>
                 <div class="instructions">
-                    <p>帮助小恐龙避开障碍物，跑得越远得分越高！</p>
+                    <p>按空格键或上箭头跳跃，避开仙人掌障碍物！</p>
                 </div>
                 <div class="mobile-controls">
                     <button class="mobile-btn jump-btn" id="dinoJump"><i class="fas fa-arrow-up"></i> 跳跃</button>
@@ -476,7 +443,7 @@
     </div>
     
     <div class="game-footer">
-        <p>© 2023 未明工作室 | 移动端优化游戏体验</p>
+        <p>© 2023 未明工作室 | 恐龙跑酷游戏优化版</p>
     </div>
 
     <script>
@@ -496,267 +463,6 @@
             }
         }
         
-        // ========== 贪吃蛇游戏 ==========
-        const snakeCanvas = document.getElementById('snakeCanvas');
-        const snakeCtx = snakeCanvas.getContext('2d');
-        const snakeBtn = document.getElementById('snakeBtn');
-        const snakePause = document.getElementById('snakePause');
-        const snakeRestart = document.getElementById('snakeRestart');
-        const snakeGameOver = document.getElementById('snakeGameOver');
-        const snakeScore = document.getElementById('snakeScore');
-        const snakeFinalScore = document.getElementById('snakeFinalScore');
-        
-        // 移动端按钮
-        const snakeUp = document.getElementById('snakeUp');
-        const snakeDown = document.getElementById('snakeDown');
-        const snakeLeft = document.getElementById('snakeLeft');
-        const snakeRight = document.getElementById('snakeRight');
-        
-        // 游戏变量
-        const gridSize = 20;
-        const gridWidth = snakeCanvas.width / gridSize;
-        const gridHeight = snakeCanvas.height / gridSize;
-        
-        let snake = [];
-        let direction = 'right';
-        let nextDirection = 'right';
-        let food = {};
-        let score = 0;
-        let gameRunning = false;
-        let gameLoop;
-        
-        // 初始化游戏
-        function initSnake() {
-            snake = [
-                {x: 5, y: 10},
-                {x: 4, y: 10},
-                {x: 3, y: 10}
-            ];
-            direction = 'right';
-            nextDirection = 'right';
-            score = 0;
-            gameRunning = true;
-            snakeGameOver.style.display = 'none';
-            snakeScore.style.display = 'flex';
-            snakeScore.innerHTML = `<i class="fas fa-star"></i> 得分: 0`;
-            spawnFood();
-            drawSnake();
-            
-            // 显示暂停按钮
-            snakeBtn.style.display = 'none';
-            snakePause.style.display = 'flex';
-        }
-        
-        // 生成食物
-        function spawnFood() {
-            food = {
-                x: Math.floor(Math.random() * gridWidth),
-                y: Math.floor(Math.random() * gridHeight)
-            };
-            
-            // 确保食物不会出现在蛇身上
-            for (let segment of snake) {
-                if (segment.x === food.x && segment.y === food.y) {
-                    return spawnFood();
-                }
-            }
-        }
-        
-        // 绘制游戏
-        function drawSnake() {
-            // 清除画布
-            snakeCtx.fillStyle = '#0a1c2f';
-            snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
-            
-            // 绘制网格背景
-            snakeCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-            snakeCtx.lineWidth = 0.5;
-            for (let x = 0; x < snakeCanvas.width; x += gridSize) {
-                snakeCtx.beginPath();
-                snakeCtx.moveTo(x, 0);
-                snakeCtx.lineTo(x, snakeCanvas.height);
-                snakeCtx.stroke();
-            }
-            for (let y = 0; y < snakeCanvas.height; y += gridSize) {
-                snakeCtx.beginPath();
-                snakeCtx.moveTo(0, y);
-                snakeCtx.lineTo(snakeCanvas.width, y);
-                snakeCtx.stroke();
-            }
-            
-            // 绘制食物
-            snakeCtx.fillStyle = '#FF5252';
-            snakeCtx.shadowColor = '#FF5252';
-            snakeCtx.shadowBlur = 15;
-            snakeCtx.beginPath();
-            snakeCtx.arc(
-                food.x * gridSize + gridSize/2, 
-                food.y * gridSize + gridSize/2, 
-                gridSize/2 - 2, 
-                0, 
-                Math.PI * 2
-            );
-            snakeCtx.fill();
-            snakeCtx.shadowBlur = 0;
-            
-            // 绘制蛇
-            for (let i = 0; i < snake.length; i++) {
-                // 蛇头用不同颜色
-                const isHead = i === 0;
-                snakeCtx.fillStyle = isHead ? '#4CAF50' : '#8BC34A';
-                
-                // 添加蛇身光泽效果
-                snakeCtx.beginPath();
-                snakeCtx.arc(
-                    snake[i].x * gridSize + gridSize/2, 
-                    snake[i].y * gridSize + gridSize/2, 
-                    gridSize/2 - 1, 
-                    0, 
-                    Math.PI * 2
-                );
-                snakeCtx.fill();
-                
-                // 添加眼睛（蛇头）
-                if (isHead) {
-                    snakeCtx.fillStyle = 'white';
-                    snakeCtx.beginPath();
-                    // 根据方向绘制眼睛位置
-                    let eyeX, eyeY;
-                    switch(direction) {
-                        case 'right': 
-                            eyeX = snake[i].x * gridSize + gridSize - 5;
-                            eyeY = snake[i].y * gridSize + 7;
-                            break;
-                        case 'left': 
-                            eyeX = snake[i].x * gridSize + 5;
-                            eyeY = snake[i].y * gridSize + 7;
-                            break;
-                        case 'up': 
-                            eyeX = snake[i].x * gridSize + 7;
-                            eyeY = snake[i].y * gridSize + 5;
-                            break;
-                        case 'down': 
-                            eyeX = snake[i].x * gridSize + 7;
-                            eyeY = snake[i].y * gridSize + gridSize - 5;
-                            break;
-                    }
-                    snakeCtx.arc(eyeX, eyeY, 3, 0, Math.PI * 2);
-                    snakeCtx.fill();
-                }
-            }
-        }
-        
-        // 更新游戏状态
-        function updateSnake() {
-            // 应用方向变化
-            direction = nextDirection;
-            
-            // 计算新头部位置
-            const head = {...snake[0]};
-            switch (direction) {
-                case 'up': head.y--; break;
-                case 'down': head.y++; break;
-                case 'left': head.x--; break;
-                case 'right': head.x++; break;
-            }
-            
-            // 检查是否吃到食物
-            if (head.x === food.x && head.y === food.y) {
-                score += 10;
-                snakeScore.innerHTML = `<i class="fas fa-star"></i> 得分: ${score}`;
-                spawnFood();
-            } else {
-                // 移除尾部
-                snake.pop();
-            }
-            
-            // 检查碰撞
-            if (
-                head.x < 0 || 
-                head.y < 0 || 
-                head.x >= gridWidth || 
-                head.y >= gridHeight ||
-                snake.some(segment => segment.x === head.x && segment.y === head.y)
-            ) {
-                endSnakeGame();
-                return;
-            }
-            
-            // 添加新头部
-            snake.unshift(head);
-            
-            // 绘制更新
-            drawSnake();
-        }
-        
-        // 游戏主循环
-        function gameStep() {
-            updateSnake();
-        }
-        
-        // 开始游戏
-        function startSnakeGame() {
-            initSnake();
-            snakeScore.style.display = 'flex';
-            snakeGameOver.style.display = 'none';
-            
-            // 开始游戏循环
-            gameLoop = setInterval(gameStep, 150);
-        }
-        
-        // 暂停游戏
-        function pauseSnakeGame() {
-            if (gameRunning) {
-                clearInterval(gameLoop);
-                gameRunning = false;
-                snakePause.style.display = 'none';
-                snakeBtn.style.display = 'flex';
-                snakeBtn.innerHTML = '<i class="fas fa-play"></i> 继续游戏';
-            }
-        }
-        
-        // 结束游戏
-        function endSnakeGame() {
-            clearInterval(gameLoop);
-            gameRunning = false;
-            snakeFinalScore.textContent = score;
-            snakeGameOver.style.display = 'flex';
-            snakePause.style.display = 'none';
-            snakeBtn.style.display = 'flex';
-            snakeBtn.innerHTML = '<i class="fas fa-play"></i> 开始游戏';
-        }
-        
-        // 键盘控制
-        document.addEventListener('keydown', function(e) {
-            if (!gameRunning) return;
-            
-            switch (e.key) {
-                case 'ArrowUp': if (direction !== 'down') nextDirection = 'up'; break;
-                case 'ArrowDown': if (direction !== 'up') nextDirection = 'down'; break;
-                case 'ArrowLeft': if (direction !== 'right') nextDirection = 'left'; break;
-                case 'ArrowRight': if (direction !== 'left') nextDirection = 'right'; break;
-                case ' ': pauseSnakeGame(); break;
-            }
-        });
-        
-        // 移动端控制
-        snakeUp.addEventListener('click', () => { if (direction !== 'down') nextDirection = 'up'; });
-        snakeDown.addEventListener('click', () => { if (direction !== 'up') nextDirection = 'down'; });
-        snakeLeft.addEventListener('click', () => { if (direction !== 'right') nextDirection = 'left'; });
-        snakeRight.addEventListener('click', () => { if (direction !== 'left') nextDirection = 'right'; });
-        
-        // 按钮事件监听
-        snakeBtn.addEventListener('click', function() {
-            if (!gameRunning) {
-                startSnakeGame();
-            } else {
-                pauseSnakeGame();
-            }
-        });
-        
-        snakePause.addEventListener('click', pauseSnakeGame);
-        snakeRestart.addEventListener('click', startSnakeGame);
-        
         // ========== 恐龙跑酷游戏 ==========
         const dinoCanvas = document.getElementById('dinoCanvas');
         const dinoCtx = dinoCanvas.getContext('2d');
@@ -770,30 +476,34 @@
         
         // 游戏变量
         const dino = {
-            x: 50,
-            y: dinoCanvas.height - 50,
-            width: 40,
-            height: 40,
+            x: 80,
+            y: dinoCanvas.height - 120,
+            width: 60,
+            height: 80,
             jumping: false,
-            jumpVelocity: 0
+            jumpVelocity: 0,
+            groundY: dinoCanvas.height - 120
         };
         
         let obstacles = [];
         let dinoGameRunning = false;
         let dinoGameLoop;
         let dinoScoreValue = 0;
-        let gameSpeed = 5;
+        let gameSpeed = 8;
         let frameCount = 0;
+        let lastObstacleTime = 0;
+        const obstacleInterval = 1500; // 障碍物生成间隔(毫秒)
         
         // 初始化游戏
         function initDino() {
-            dino.y = dinoCanvas.height - 50;
+            dino.y = dino.groundY;
             dino.jumping = false;
             dino.jumpVelocity = 0;
             obstacles = [];
             dinoScoreValue = 0;
-            gameSpeed = 5;
+            gameSpeed = 8;
             frameCount = 0;
+            lastObstacleTime = 0;
             dinoGameRunning = true;
             dinoGameOver.style.display = 'none';
             dinoScore.style.display = 'flex';
@@ -801,7 +511,7 @@
             drawDino();
         }
         
-        // 绘制游戏
+        // 绘制恐龙
         function drawDino() {
             // 清除画布
             dinoCtx.fillStyle = '#0a1c2f';
@@ -809,51 +519,99 @@
             
             // 绘制地面
             dinoCtx.fillStyle = '#555';
-            dinoCtx.fillRect(0, dinoCanvas.height - 10, dinoCanvas.width, 10);
+            dinoCtx.fillRect(0, dinoCanvas.height - 20, dinoCanvas.width, 20);
+            
+            // 绘制地面纹理
+            dinoCtx.fillStyle = '#666';
+            for (let i = 0; i < dinoCanvas.width; i += 20) {
+                dinoCtx.fillRect(i, dinoCanvas.height - 20, 10, 5);
+            }
             
             // 绘制云朵
             dinoCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            dinoCtx.fillRect(100 - (frameCount/10) % dinoCanvas.width, 50, 60, 20);
-            dinoCtx.fillRect(250 - (frameCount/8) % dinoCanvas.width, 90, 70, 25);
-            dinoCtx.fillRect(400 - (frameCount/12) % dinoCanvas.width, 70, 50, 15);
+            dinoCtx.fillRect(100 - (frameCount/10) % dinoCanvas.width, 50, 80, 25);
+            dinoCtx.fillRect(300 - (frameCount/8) % dinoCanvas.width, 90, 100, 30);
+            dinoCtx.fillRect(500 - (frameCount/12) % dinoCanvas.width, 70, 60, 20);
             
-            // 绘制恐龙
+            // 绘制恐龙身体
             dinoCtx.fillStyle = '#4CAF50';
             dinoCtx.shadowColor = '#4CAF50';
             dinoCtx.shadowBlur = 10;
+            
+            // 身体
             dinoCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
-            dinoCtx.shadowBlur = 0;
             
-            // 绘制眼睛
+            // 头部
+            dinoCtx.fillRect(dino.x + dino.width - 10, dino.y - 20, 40, 30);
+            
+            // 眼睛
             dinoCtx.fillStyle = 'white';
-            dinoCtx.fillRect(dino.x + dino.width - 15, dino.y + 10, 8, 8);
+            dinoCtx.fillRect(dino.x + dino.width + 20, dino.y - 15, 8, 8);
+            dinoCtx.fillStyle = 'black';
+            dinoCtx.fillRect(dino.x + dino.width + 23, dino.y - 13, 4, 4);
             
-            // 绘制嘴巴
+            // 嘴巴
             dinoCtx.strokeStyle = '#E91E63';
             dinoCtx.lineWidth = 3;
             dinoCtx.beginPath();
-            dinoCtx.moveTo(dino.x + 10, dino.y + 25);
-            dinoCtx.lineTo(dino.x + dino.width - 8, dino.y + 25);
+            dinoCtx.moveTo(dino.x + dino.width + 15, dino.y);
+            dinoCtx.lineTo(dino.x + dino.width + 30, dino.y);
             dinoCtx.stroke();
             
+            // 腿
+            dinoCtx.fillStyle = '#4CAF50';
+            dinoCtx.fillRect(dino.x + 10, dino.y + dino.height, 15, 30);
+            dinoCtx.fillRect(dino.x + dino.width - 25, dino.y + dino.height, 15, 30);
+            
+            // 尾巴
+            dinoCtx.beginPath();
+            dinoCtx.moveTo(dino.x - 20, dino.y + dino.height/2);
+            dinoCtx.lineTo(dino.x, dino.y + dino.height/2 - 10);
+            dinoCtx.lineTo(dino.x, dino.y + dino.height/2 + 10);
+            dinoCtx.closePath();
+            dinoCtx.fill();
+            
+            dinoCtx.shadowBlur = 0;
+            
             // 绘制障碍物
-            dinoCtx.fillStyle = '#FF9800';
+            dinoCtx.fillStyle = '#2E7D32';
             for (let obstacle of obstacles) {
                 // 仙人掌绘制
                 dinoCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                dinoCtx.fillRect(obstacle.x - 8, obstacle.y - 15, 8, 15);
-                dinoCtx.fillRect(obstacle.x + obstacle.width, obstacle.y - 15, 8, 15);
+                
+                // 仙人掌刺
+                dinoCtx.beginPath();
+                dinoCtx.moveTo(obstacle.x + obstacle.width/2, obstacle.y);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 10, obstacle.y - 15);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 10, obstacle.y - 15);
+                dinoCtx.closePath();
+                dinoCtx.fill();
+                
+                dinoCtx.beginPath();
+                dinoCtx.moveTo(obstacle.x + obstacle.width/2 - 5, obstacle.y + 20);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 15, obstacle.y + 5);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 5, obstacle.y + 5);
+                dinoCtx.closePath();
+                dinoCtx.fill();
+                
+                dinoCtx.beginPath();
+                dinoCtx.moveTo(obstacle.x + obstacle.width/2 + 5, obstacle.y + 20);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 15, obstacle.y + 5);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 5, obstacle.y + 5);
+                dinoCtx.closePath();
+                dinoCtx.fill();
             }
         }
         
         // 更新游戏状态
         function updateDino() {
+            const now = Date.now();
             frameCount++;
             dinoScoreValue += 0.1;
             dinoScore.innerHTML = `<i class="fas fa-trophy"></i> 得分: ${Math.floor(dinoScoreValue)}`;
             
             // 每10秒提升游戏速度
-            if (frameCount % 600 === 0 && gameSpeed < 12) {
+            if (frameCount % 600 === 0 && gameSpeed < 15) {
                 gameSpeed += 0.5;
             }
             
@@ -863,20 +621,22 @@
                 dino.jumpVelocity += 0.6; // 重力
                 
                 // 落地检测
-                if (dino.y > dinoCanvas.height - 50) {
-                    dino.y = dinoCanvas.height - 50;
+                if (dino.y > dino.groundY) {
+                    dino.y = dino.groundY;
                     dino.jumping = false;
                 }
             }
             
-            // 生成新障碍物 (优化了刷新机制)
-            if (obstacles.length < 3 && Math.random() < 0.02) {
+            // 生成新障碍物 - 使用时间间隔控制
+            if (now - lastObstacleTime > obstacleInterval && obstacles.length < 3) {
+                const height = 50 + Math.random() * 50;
                 obstacles.push({
                     x: dinoCanvas.width,
-                    y: dinoCanvas.height - (40 + Math.random() * 20),
-                    width: 20 + Math.random() * 15,
-                    height: 30 + Math.random() * 20
+                    y: dinoCanvas.height - height - 20,
+                    width: 25,
+                    height: height
                 });
+                lastObstacleTime = now;
             }
             
             // 移动障碍物
@@ -947,7 +707,7 @@
         function jump() {
             if (!dino.jumping && dinoGameRunning) {
                 dino.jumping = true;
-                dino.jumpVelocity = -13;
+                dino.jumpVelocity = -15;
             }
         }
         
@@ -979,7 +739,6 @@
             createBubbles();
             
             // 初始绘制
-            drawSnake();
             drawDino();
         });
     </script>
