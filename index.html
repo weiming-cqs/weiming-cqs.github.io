@@ -14,19 +14,47 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            color: #fff;
+            background: linear-gradient(to bottom, #3498db, #B7CEEB, #FFFFFF);
+            color: #2c3e50;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
         
-        /* 粒子背景 */
-        #particles-js {
+        /* 气泡背景 */
+        .bubbles {
             position: absolute;
             width: 100%;
             height: 100%;
             z-index: -1;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            animation: float 15s infinite ease-in-out;
+            bottom: -100px;
+        }
+        
+        @keyframes float {
+            0% { 
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% { 
+                transform: translateY(-100vh) scale(1.2);
+                opacity: 0;
+            }
         }
         
         /* 导航栏 */
@@ -38,22 +66,22 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(10, 15, 40, 0.85);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
         
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #fff;
+            color: #2c3e50;
             text-decoration: none;
             display: flex;
             align-items: center;
         }
         
         .logo i {
-            color: #ff6b6b;
+            color: #3498db;
             margin-right: 10px;
         }
         
@@ -68,7 +96,7 @@
         
         .nav-links a {
             text-decoration: none;
-            color: rgba(255, 255, 255, 0.8);
+            color: #2c3e50;
             font-weight: 500;
             transition: all 0.3s;
             position: relative;
@@ -76,7 +104,7 @@
         }
         
         .nav-links a:hover {
-            color: #fff;
+            color: #3498db;
         }
         
         .nav-links a::after {
@@ -86,7 +114,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #ff6b6b;
+            background: #3498db;
             transition: width 0.3s ease;
         }
         
@@ -111,16 +139,17 @@
             font-size: 3.5rem;
             margin-bottom: 20px;
             line-height: 1.2;
+            color: #2c3e50;
         }
         
         .hero h1 span {
-            color: #ff6b6b;
+            color: #3498db;
         }
         
         .hero p {
             font-size: 1.2rem;
             margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.9);
+            color: #34495e;
             line-height: 1.8;
         }
         
@@ -138,27 +167,28 @@
             font-weight: 600;
             transition: all 0.3s;
             text-align: center;
+            font-size: 1.1rem;
         }
         
         .btn-primary {
-            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            background: linear-gradient(to right, #3498db, #2c3e50);
             color: white;
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
         }
         
         .btn-outline {
-            border: 2px solid #ff6b6b;
-            color: #ff6b6b;
+            border: 2px solid #3498db;
+            color: #3498db;
             background: transparent;
         }
         
         .btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
         
         .btn-primary:hover {
-            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
         }
         
         .hero-image {
@@ -177,28 +207,29 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ff6b6b, #4e54c8);
+            background: linear-gradient(45deg, #3498db, #B7CEEB);
             display: flex;
             align-items: center;
             justify-content: center;
             animation: pulse 4s infinite;
+            box-shadow: 0 20px 40px rgba(52, 152, 219, 0.3);
         }
         
         .profile-img {
             width: 90%;
             height: 90%;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            background: white;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 5px solid rgba(255, 255, 255, 0.1);
+            border: 5px solid rgba(255, 255, 255, 0.5);
         }
         
         .profile-img i {
             font-size: 10rem;
-            color: rgba(255, 255, 255, 0.2);
+            color: rgba(52, 152, 219, 0.2);
         }
         
         /* 动画 */
@@ -209,13 +240,158 @@
         }
         
         .floating {
-            animation: float 6s ease-in-out infinite;
+            animation: floatElement 6s ease-in-out infinite;
         }
         
-        @keyframes float {
+        @keyframes floatElement {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
             100% { transform: translateY(0px); }
+        }
+        
+        /* 服务部分 */
+        .services {
+            padding: 100px 10%;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #2c3e50;
+        }
+        
+        .section-title span {
+            color: #3498db;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(52, 152, 219, 0.2);
+        }
+        
+        .service-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(to bottom, #3498db, #B7CEEB);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .service-card p {
+            color: #7f8c8d;
+            line-height: 1.8;
+        }
+        
+        /* 页脚 */
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 60px 10% 30px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 50px;
+            text-align: left;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #3498db;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #3498db;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .footer-links a:hover {
+            color: #3498db;
+            transform: translateX(5px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-links a:hover {
+            background: #3498db;
+            transform: translateY(-5px);
+        }
+        
+        .copyright {
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
         }
         
         /* 响应式设计 */
@@ -240,7 +416,7 @@
             }
         }
         
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
             }
@@ -258,17 +434,21 @@
                 width: 250px;
                 height: 250px;
             }
+            
+            .service-card {
+                padding: 30px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 粒子背景 -->
-    <div id="particles-js"></div>
+    <!-- 气泡背景 -->
+    <div class="bubbles" id="bubbles"></div>
     
     <!-- 导航栏 -->
     <nav class="navbar">
         <a href="index.html" class="logo">
-            <i class="fas fa-stars"></i>未明空间
+            <i class="fas fa-cloud"></i>未明空间
         </a>
         <ul class="nav-links">
             <li><a href="index.html" class="active">首页</a></li>
@@ -302,47 +482,124 @@
         </div>
     </section>
     
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- 服务部分 -->
+    <section class="services">
+        <h2 class="section-title">我的<span>服务</span></h2>
+        
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <h3>网站开发</h3>
+                <p>创建响应式、用户友好的网站，结合最新技术实现卓越的用户体验和视觉效果。</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>移动应用</h3>
+                <p>开发高性能的移动应用程序，支持iOS和Android平台，满足您的业务需求。</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <h3>UI/UX设计</h3>
+                <p>设计直观、美观的用户界面，提供卓越的用户体验，增强用户参与度和满意度。</p>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>数据分析</h3>
+                <p>将复杂数据转化为有价值的洞察，帮助您做出更明智的业务决策。</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页脚 -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>未明空间</h3>
+                <p>创造优雅、高效的解决方案，将复杂问题转化为直观体验。</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-weibo"></i></a>
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-bilibili"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>快速链接</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="2.html">关于我</a></li>
+                    <li><a href="3.html">作品集</a></li>
+                    <li><a href="4.html">联系我</a></li>
+                    <li><a href="5.html">特别心意</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>我的服务</h3>
+                <ul class="footer-links">
+                    <li><a href="#">网站开发</a></li>
+                    <li><a href="#">移动应用</a></li>
+                    <li><a href="#">UI/UX设计</a></li>
+                    <li><a href="#">数据分析</a></li>
+                    <li><a href="#">技术咨询</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>联系方式</h3>
+                <ul class="footer-links">
+                    <li><i class="fas fa-envelope"></i> contact@weiming.com</li>
+                    <li><i class="fas fa-phone"></i> +86 138 8888 8888</li>
+                    <li><i class="fas fa-map-marker-alt"></i> 北京市海淀区中关村</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>© 2023 未明的个人网站 | 用 ❤️ 和代码构建</p>
+        </div>
+    </footer>
+    
     <script>
-        // 粒子背景配置
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: "#ffffff" },
-                shape: { type: "circle" },
-                opacity: { value: 0.1, random: true },
-                size: { value: 3, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: "#ffffff",
-                    opacity: 0.05,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 2,
-                    direction: "none",
-                    random: true,
-                    straight: false,
-                    out_mode: "out",
-                    bounce: false
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "grab" },
-                    onclick: { enable: true, mode: "push" },
-                    resize: true
-                },
-                modes: {
-                    grab: { distance: 200, line_linked: { opacity: 0.3 } },
-                    push: { particles_nb: 4 }
-                }
-            },
-            retina_detect: true
-        });
+        // 创建气泡
+        function createBubbles() {
+            const bubblesContainer = document.getElementById('bubbles');
+            const bubbleCount = 30;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // 随机大小
+                const size = Math.random() * 100 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // 随机位置
+                bubble.style.left = `${Math.random() * 100}%`;
+                
+                // 随机动画延迟和时长
+                bubble.style.animationDelay = `${Math.random() * 5}s`;
+                bubble.style.animationDuration = `${10 + Math.random() * 20}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+        
+        // 页面加载时创建气泡
+        window.addEventListener('DOMContentLoaded', createBubbles);
     </script>
 </body>
 </html>
