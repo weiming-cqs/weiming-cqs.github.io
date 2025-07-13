@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明未 | 特别心意</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #f9f7fe 0%, #e6f3ff 100%);
+            color: #333;
+            line-height: 1.8;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .special-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        
+        .section-header h2 {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 4rem;
+            color: #e67e22;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .section-header p {
+            font-size: 1.4rem;
+            color: #7f8c8d;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .divider {
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #e67e22, #f1c40f);
+            margin: 20px auto 40px;
+            border-radius: 2px;
+        }
+        
+        .heart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .heart-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 550px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .heart-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        
+        .heart-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #e67e22, #f1c40f);
+        }
+        
+        .heart-card h3 {
+            font-size: 2.2rem;
+            color: #e67e22;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .heart-card h3 i {
+            margin-right: 12px;
+            color: #e74c3c;
+        }
+        
+        .heart-card p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 25px;
+            text-align: justify;
+            line-height: 1.9;
+        }
+        
+        .quote {
+            font-style: italic;
+            border-left: 4px solid #f1c40f;
+            padding: 15px 20px;
+            margin: 25px 0;
+            background: #fffdf0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .signature {
+            text-align: right;
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.8rem;
+            color: #e67e22;
+            margin-top: 20px;
+        }
+        
+        .blessing-box {
+            background: linear-gradient(135deg, #fff9db 0%, #ffe8cc 100%);
+            border: 3px dashed #f1c40f;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px auto;
+            max-width: 800px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .blessing-box::before {
+            content: "❦";
+            position: absolute;
+            font-size: 10rem;
+            color: rgba(230, 126, 34, 0.08);
+            top: -30px;
+            left: -20px;
+            transform: rotate(-20deg);
+        }
+        
+        .blessing-box::after {
+            content: "❦";
+            position: absolute;
+            font-size: 10rem;
+            color: rgba(230, 126, 34, 0.08);
+            bottom: -40px;
+            right: -20px;
+            transform: rotate(15deg);
+        }
+        
+        .blessing-box h3 {
+            font-size: 2.5rem;
+            color: #e67e22;
+            margin-bottom: 30px;
+        }
+        
+        .blessing-content {
+            font-size: 1.4rem;
+            color: #7d6608;
+            line-height: 1.9;
+            margin-bottom: 30px;
+        }
+        
+        .interactive-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 60px;
+        }
+        
+        .wish-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        
+        .wish-card h3 {
+            font-size: 1.8rem;
+            color: #e67e22;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #f1c40f;
+            border-radius: 10px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            resize: none;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #e67e22;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(90deg, #e67e22, #f1c40f);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: 'Noto Serif SC', serif;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(230, 126, 34, 0.3);
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(231, 76, 60, 0.6);
+            z-index: -1;
+            animation: float 8s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -30px) rotate(10deg); }
+            50% { transform: translate(-15px, -50px) rotate(-10deg); }
+            75% { transform: translate(25px, -20px) rotate(5deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .section-header h2 {
+                font-size: 3rem;
+            }
+            
+            .heart-card {
+                padding: 30px 20px;
+            }
+            
+            .blessing-box {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 浮动心形背景元素 -->
+    <div class="floating-heart" style="top: 10%; left: 5%;">❤</div>
+    <div class="floating-heart" style="top: 15%; right: 7%;">❤</div>
+    <div class="floating-heart" style="top: 40%; left: 3%;">❤</div>
+    <div class="floating-heart" style="top: 65%; right: 5%;">❤</div>
+    <div class="floating-heart" style="top: 80%; left: 8%;">❤</div>
+    
+    <section class="special-section">
+        <div class="section-header">
+            <h2>特别心意</h2>
+            <div class="divider"></div>
+            <p>这个角落盛放着我最真挚的情感与祝福</p>
+        </div>
+        
+        <div class="heart-container">
+            <div class="heart-card">
+                <h3><i class="fas fa-hands-helping"></i> 感恩遇见</h3>
+                <p>亲爱的访客朋友：</p>
+                <p>当我开始创建这个小小的网络空间时，我未曾想到会遇见这么多善良而有趣的灵魂。每一次访问，每一次停留，都是对我的莫大鼓励。</p>
+                
+                <div class="quote">
+                    "人生最美的相遇，是不期而遇的温暖。感谢您踏入我的世界，让我平凡的日子闪烁着特别的光芒。"
+                </div>
+                
+                <p>在这个信息如潮的时代，您愿意花时间阅读我的文字，了解我的项目，这份心意我深深珍藏。无论您是偶然路过，还是特意来访，我都视若珍宝。</p>
+                
+                <p>特别感谢那些留下宝贵建议的朋友们，是你们让这个空间不断成长、日益完善。</p>
+                
+                <div class="signature">感恩于心</div>
+            </div>
+            
+            <div class="heart-card">
+                <h3><i class="fas fa-lightbulb"></i> 心路历程</h3>
+                <p>建立这个网站的过程，也是自我发现与成长的旅程：</p>
+                
+                <p><strong>启程：</strong> 最初只是一个简单的想法，想把自己的项目整理展示。那时技术生疏，常常为一个小问题调试到深夜。</p>
+                
+                <p><strong>坚持：</strong> 多少个周末，当朋友们在享受闲暇时光，我却在代码与设计中摸索前行。一次次失败，一次次重来。</p>
+                
+                <p><strong>突破：</strong> 记得第一次成功实现复杂功能时的喜悦，那种突破自我的成就感至今难忘。</p>
+                
+                <div class="quote">
+                    "代码不仅是逻辑的堆砌，更是思想的表达；设计不仅是视觉的呈现，更是心灵的对话。"
+                </div>
+                
+                <p><strong>领悟：</strong> 渐渐地，我明白了这个空间更深层的意义——它不仅是作品的展示，更是我成长的见证，价值观的传达。</p>
+                
+                <p>每一行代码，每一张图片，都承载着我对完美的追求和对分享的热爱。</p>
+                
+                <div class="signature">成长印记</div>
+            </div>
+        </div>
+        
+        <div class="blessing-box">
+            <h3><i class="fas fa-gift"></i> 特别祝福</h3>
+            <div class="blessing-content">
+                <p>亲爱的朋友，愿您：</p>
+                <p>心中有光，脚下有路</p>
+                <p>在代码的世界里灵感如泉涌</p>
+                <p>在生活的旅途中风景常相伴</p>
+                <p>在追梦的道路上坚定而从容</p>
+                <p>愿您的每个清晨都充满希望</p>
+                <p>每个夜晚都安宁满足</p>
+                <p>愿美好与您环环相扣</p>
+            </div>
+            <p>—— 来自一位珍视您的朋友</p>
+        </div>
+        
+        <div class="interactive-section">
+            <div class="wish-card">
+                <h3><i class="fas fa-comment-dots"></i> 留言祝福</h3>
+                <p>请留下您的心意，我会珍藏每一份祝福</p>
+                <textarea placeholder="在此输入您的祝福或建议..."></textarea>
+                <button>传递心意</button>
+            </div>
+            
+            <div class="wish-card">
+                <h3><i class="fas fa-envelope"></i> 联系我</h3>
+                <p>期待与您交流分享</p>
+                <p style="margin: 25px 0; font-size: 1.2rem;">
+                    <i class="fas fa-envelope"></i> contact@example.com<br>
+                    <i class="fab fa-github"></i> github.com/username
+                </p>
+                <p>无论技术探讨还是生活分享，都欢迎您的来信</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 浮动心形动画
+        const hearts = document.querySelectorAll('.floating-heart');
+        hearts.forEach((heart, index) => {
+            // 设置不同的动画延迟
+            heart.style.animationDelay = `${index * 1.5}s`;
+        });
+        
+        // 祝福提交功能
+        const messageTextarea = document.querySelector('textarea');
+        const submitBtn = document.querySelector('button');
+        
+        submitBtn.addEventListener('click', function() {
+            const message = messageTextarea.value.trim();
+            
+            if(message.length < 5) {
+                alert('请至少输入5个字符的祝福');
+                return;
+            }
+            
+            if(message.length > 300) {
+                alert('留言内容过长，请保持在300字以内');
+                return;
+            }
+            
+            // 这里可以添加实际提交到服务器的代码
+            alert('感谢您的祝福！您的心意我已收到 ❤');
+            messageTextarea.value = '';
+        });
+        
+        // 卡片悬停效果增强
+        const cards = document.querySelectorAll('.heart-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
