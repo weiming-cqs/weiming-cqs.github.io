@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未明 - 作品集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e5799, #2989d8, #7db9e8);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 气泡动画 */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: rise linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        @keyframes rise {
+            to {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #64e3ff;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 主内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .page-title h1 {
+            font-size: 3rem;
+            display: inline-block;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #1e5799, #2989d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        .page-title::before,
+        .page-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64e3ff, transparent);
+        }
+        
+        .page-title::before {
+            left: 0;
+        }
+        
+        .page-title::after {
+            right: 0;
+        }
+        
+        /* 项目分类 */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .tab:hover, .tab.active {
+            background: rgba(100, 227, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 项目网格 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 35px;
+            margin-bottom: 60px;
+        }
+        
+        .project-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .project-image {
+            height: 200px;
+            background: linear-gradient(45deg, #1e5799, #64e3ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .project-image i {
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .project-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
+        }
+        
+        .project-content {
+            padding: 25px;
+        }
+        
+        .project-content h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: #64e3ff;
+        }
+        
+        .project-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background: rgba(100, 227, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .project-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .project-btn {
+            flex: 1;
+            padding: 8px 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        
+        .project-btn:hover {
+            background: rgba(100, 227, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        /* 学习历程 */
+        .learning-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .learning-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #64e3ff;
+        }
+        
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, #64e3ff, #7d7dff);
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 20px 40px;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .timeline-content h3 {
+            color: #64e3ff;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: #64e3ff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+        
+        /* 技能展示 */
+        .skills-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .skills-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: #64e3ff;
+        }
+        
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .skill-category {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .skill-category h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #64e3ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .skill-item {
+            margin-bottom: 20px;
+        }
+        
+        .skill-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .skill-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #64e3ff, #7d7dff);
+            border-radius: 5px;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+            background: rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+                left: 0 !important;
+            }
+            
+            .timeline-item::after {
+                left: 20px !important;
+                right: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 气泡背景 -->
+    <div class="bubbles"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-folder-open"></i>
+            <span>未明 | 作品集</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="2.html">关于我</a>
+            <a href="#" class="active">作品集</a>
+            <a href="4.html">联系我</a>
+            <a href="5.html">特别心意</a>
+        </div>
+    </nav>
+    
+    <!-- 主内容区 -->
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1>我的作品集</h1>
+        </div>
+        
+        <p style="text-align: center; font-size: 1.2rem; max-width: 800px; margin: 0 auto 50px; line-height: 1.7; opacity: 0.9;">
+            作为一名学生开发者，我专注于学习和实践编程技能。以下展示的是我学习过程中的练习项目和技能掌握情况。
+            每个项目都代表了我对特定技术领域的探索和理解。
+        </p>
+        
+        <!-- 项目分类 -->
+        <div class="category-tabs">
+            <div class="tab active">全部项目</div>
+            <div class="tab">网页设计</div>
+            <div class="tab">Java应用</div>
+            <div class="tab">Python程序</div>
+            <div class="tab">C++项目</div>
+            <div class="tab">图形化编程</div>
+        </div>
+        
+        <!-- 项目网格 -->
+        <div class="projects-grid">
+            <!-- 项目1 -->
+            <div class="project-card">
+                <div class="project-image">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="project-content">
+                    <h3>个人作品集网站</h3>
+                    <p>使用HTML/CSS和JavaScript创建的响应式个人网站，展示我的学习成果和技能。包含动画效果和响应式布局。</p>
+                    <div class="project-tags">
+                        <div class="tag">HTML5</div>
+                        <div class="tag">CSS3</div>
+                        <div class="tag">JavaScript</div>
+                        <div class="tag">响应式设计</div>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="#" class="project-btn"><i class="fas fa-eye"></i> 查看效果</a>
+                        <a href="#" class="project-btn"><i class="fab fa-github"></i> 代码预览</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目2 -->
+            <div class="project-card">
+                <div class="project-image" style="background: linear-gradient(45deg, #2c7744, #64e3ff);">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="project-content">
+                    <h3>学生成绩管理系统</h3>
+                    <p>使用Java开发的控制台应用程序，可以管理学生信息、录入成绩、计算平均分并生成简单报表。</p>
+                    <div class="project-tags">
+                        <div class="tag">Java</div>
+                        <div class="tag">控制台应用</div>
+                        <div class="tag">数据处理</div>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="#" class="project-btn"><i class="fas fa-eye"></i> 查看效果</a>
+                        <a href="#" class="project-btn"><i class="fab fa-github"></i> 代码预览</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目3 -->
+            <div class="project-card">
+                <div class="project-image" style="background: linear-gradient(45deg, #8e44ad, #64e3ff);">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div class="project-content">
+                    <h3>简易贪吃蛇游戏</h3>
+                    <p>使用Python和Pygame库开发的经典贪吃蛇游戏，包含计分系统、难度选择和游戏结束界面。</p>
+                    <div class="project-tags">
+                        <div class="tag">Python</div>
+                        <div class="tag">Pygame</div>
+                        <div class="tag">游戏开发</div>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="#" class="project-btn"><i class="fas fa-eye"></i> 查看效果</a>
+                        <a href="#" class="project-btn"><i class="fab fa-github"></i> 代码预览</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目4 -->
+            <div class="project-card">
+                <div class="project-image" style="background: linear-gradient(45deg, #d35400, #64e3ff);">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="project-content">
+                    <h3>图书馆管理系统</h3>
+                    <p>使用C++开发的控制台应用程序，实现图书借阅、归还、查询和管理功能，使用文件存储数据。</p>
+                    <div class="project-tags">
+                        <div class="tag">C++</div>
+                        <div class="tag">文件处理</div>
+                        <div class="tag">数据结构</div>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="#" class="project-btn"><i class="fas fa-eye"></i> 查看效果</a>
+                        <a href="#" class="project-btn"><i class="fab fa-github"></i> 代码预览</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目5 -->
+            <div class="project-card">
+                <div class="project-image" style="background: linear-gradient(45deg, #27ae60, #64e3ff);">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div class="project-content">
+                    <h3>交互式数字艺术</h3>
+                    <p>使用Processing创建的交互式视觉艺术项目，用户可以通过鼠标和键盘与生成艺术进行交互。</p>
+                    <div class="project-tags">
+                        <div class="tag">Processing</div>
+                        <div class="tag">图形编程</div>
+                        <div class="tag">交互设计</div>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="#" class="project-btn"><i class="fas fa-eye"></i> 查看效果</a>
+                        <a href="#" class="project-btn"><i class="fab fa-github"></i> 代码预览</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 项目6 -->
+            <div class="project-card">
+                <div class="project-image" style="background: linear-gradient(45deg, #c0392b, #64e3ff);">
+                    <i class="fas fa-cloud-sun"></i>
+                </div>
+                <div class="project-content">
+                    <h3>天气预报小程序</h3>
+                    <p>使用Python开发的命令行天气查询工具，通过API获取实时天气数据并显示在终端中。</p>
+                    <div class="project-tags">
+                        <div class="tag">Python</div>
+                        <div class="tag">API调用</div>
+                        <div class="tag">数据处理</div>
+                    </div>
+                    <div class="project-buttons">
+                        <a href="#" class="project-btn"><i class="fas fa-eye"></i> 查看效果</a>
+                        <a href="#" class="project-btn"><i class="fab fa-github"></i> 代码预览</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 学习历程 -->
+        <div class="learning-section">
+            <h2>我的学习历程</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>图形化编程启蒙</h3>
+                        <p>小学阶段开始接触Scratch等图形化编程工具，通过拖拽积木块的方式学习编程逻辑，创作简单动画和小游戏。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Python入门</h3>
+                        <p>通过学校课程和在线资源学习Python基础语法，完成多个小型项目实践，包括计算器、简单游戏等。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>网页开发学习</h3>
+                        <p>系统学习HTML/CSS和JavaScript，掌握响应式网页设计原理，创建个人网站和多个练习项目。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Java与C++进阶</h3>
+                        <p>学习面向对象编程思想，通过Java和C++实现更复杂的项目，如图书管理系统和学生成绩系统。</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>Processing创意编程</h3>
+                        <p>探索Processing图形编程，创作交互式艺术作品，将编程与艺术设计相结合。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 技能展示 -->
+        <div class="skills-section">
+            <h2>技术能力展示</h2>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3><i class="fab fa-html5"></i> 前端开发</h3>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>HTML5</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>CSS3</span>
+                            <span>80%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>JavaScript</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-code"></i> 编程语言</h3>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Python</span>
+                            <span>75%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 75%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Java</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>C++</span>
+                            <span>65%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3><i class="fas fa-paint-brush"></i> 图形化编程</h3>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Processing</span>
+                            <span>70%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 70%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>Scratch</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-header">
+                            <span>游戏开发</span>
+                            <span>60%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 60%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 未明 - 学生开发者 | 学习 · 创造 · 成长</p>
+    </footer>
+
+    <script>
+        // 气泡动画生成
+        function createBubbles() {
+            const bubblesContainer = document.querySelector('.bubbles');
+            const bubbleCount = 30;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // 随机大小 (10px 到 80px)
+                const size = Math.random() * 70 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // 随机位置
+                bubble.style.left = `${Math.random() * 100}%`;
+                
+                // 随机动画时长 (8s 到 20s)
+                const duration = Math.random() * 12 + 8;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // 随机动画延迟 (0s 到 5s)
+                const delay = Math.random() * 5;
+                bubble.style.animationDelay = `${delay}s`;
+                
+                // 随机透明度
+                bubble.style.opacity = Math.random() * 0.4 + 0.1;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+        
+        // 初始化页面
+        window.onload = function() {
+            createBubbles();
+            
+            // 设置当前页面导航项为激活状态
+            const currentPage = document.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (currentPage === linkPage || (currentPage === '' && linkPage === 'index.html')) {
+                    link.style.background = 'rgba(100, 227, 255, 0.3)';
+                    link.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                }
+            });
+            
+            // 项目分类标签切换
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // 这里可以添加实际的分类过滤功能
+                    // 目前仅为视觉反馈
+                });
+            });
+            
+            // 为所有卡片添加悬停效果监听
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-15px)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'translateY(0)';
+                });
+            });
+        };
+    </script>
+</body>
+</html>
