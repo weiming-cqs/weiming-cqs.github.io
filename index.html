@@ -3,208 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>未明的个人空间</title>
+    <title>未明 | 个人空间</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* 基础样式 */
+        :root {
+            --primary: #4e54c8;
+            --secondary: #6a11cb;
+            --accent: #ff6b6b;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
         
         body {
-            background: #f8f9fa;
-            color: #333;
+            font-family: 'Noto Sans SC', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6e9ff 100%);
+            color: var(--dark);
             line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+            overflow-x: hidden;
         }
         
-        header {
-            text-align: center;
-            padding: 40px 0 30px;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-           .profile {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #4e54c8;
-            margin: 0 auto 15px;
+        
+        section {
+            padding: 100px 0;
+        }
+        
+        /* 第一部分：导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2.5rem;
+            font-size: 1.2rem;
+            margin-right: 10px;
         }
         
-        h1 {
+        .logo-text {
             font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: #4e54c8;
+            font-weight: 700;
+            color: var(--dark);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .tagline {
-            color: #666;
-        }
-        
-        section {
-            margin: 30px 0;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-          
-        h2 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: #4e54c8;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 8px;
-        }
-        
-        p {
-            margin-bottom: 12px;
-        }
-        
-        .skills {
+        .nav-links {
             display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
+            list-style: none;
         }
         
-        .skill {
-            background: #f0f4ff;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        .nav-links li {
+            margin-left: 30px;
         }
         
-        .project {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .project:last-child {
-            margin-bottom: 0;
-            border: none;
-            padding-bottom: 0;
-        }
-        
-        .project a {
-            color: #4e54c8;
+        .nav-links a {
             text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1.1rem;
+            position: relative;
+            padding: 5px 0;
+            transition: var(--transition);
         }
         
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: var(--transition);
         }
         
-        .social-links a {
-            color: #4e54c8;
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .nav-links a.active {
+            color: var(--primary);
+        }
+        
+        .menu-toggle {
+            display: none;
             font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
         }
         
-        footer {
-            text-align: center;
-            padding: 20px 0;
-            color: #666;
-            font-size: 0.9rem;
+        /* 第二部分：英雄区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
         }
-            </style>
-</head>
-<body>
-    <!-- 头部 -->
-    <header>
-        <div class="profile">未</div>
-        <h1>未明</h1>
-        <p class="tagline">低情商 | 🤔😜🤣 | 天才艺术家</p >
-    </header>
-    
-    <!-- 关于我 -->
-    <section id="about">
-        <h2>关于我</h2>
-        <p>你好，我是未明。</p >
-    
-    </section>
-      <!-- 技能 -->
-    <section id="skills">
-        <h2>技术技能</h2>
-        <div class="skills">
-            <div class="skill">HTML/CSS</div>
-            <div class="skill">JavaScript</div>
-            <div class="skill">Python</div>
-            <div class="skill">c++</div>
-        </div>
-    </section>
-    
-    <!-- 项目 -->
-    <section id="projects">
-        <h2>我的项目</h2>
-        <div class="project">
-            <h3>awa</h3>
-            <p>awa。</p >
-            <a href="love.html" class="btn btn-primary">查看项目</a>
-        </div>
-        <div class="project">
-            <h3>无</h3>
-            <p>无。</p >
-            查看项目
-        </div>
-      
-    </section>
-    <!-- 联系 -->
-    <section id="contact">
-        <h2>联系我</h2>
-        <p>邮箱: cqs114514c@163.com</p >
-        <p>位置: 中国 · 天津</p >
-        <p>QQ: 2754368967</p >
-
-        <div class="social-links">
-            a
-            w
-            a
-        </div>
-    </section>
-    
-    <!-- 页脚 -->
-    <footer>
-
-   <p>访问人数: <span id="visitCount" class="counter">加载中...</span></p >
-    </header>
-    <p>© 2023 未明的个人网站 | 用 ❤️ 和代码构建</p >
-</footer>
-
-    <!-- 访问计数器 -->
-    <script>
-        // 使用localStorage实现访问计数（仅客户端）
-        function updateCounter() {
-            // 从localStorage获取访问次数
-            let count = localStorage.getItem('visitCount');
-            
-            // 如果是第一次访问，初始化为1
-            if (!count) {
-                count = 1;
-            } else {
-                // 否则增加计数
-                count = parseInt(count) + 1;
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 700px;
+            height: 700px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(78, 84, 200, 0.1), rgba(106, 17, 203, 0.05));
+            z-index: -1;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 142, 142, 0.05));
+            z-index: -1;
+        }
+        
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            animation: fadeInRight 1s ease-out;
+        }
+        
+        .hero-avatar {
+            width: 380px;
+            height: 380px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .avatar-placeholder {
+            width: 340px;
+            height: 340px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 5rem;
+        }
+        
+        .hero-text h4 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--dark), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 40px;
+            max-width: 500px;
+        }
+        
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+        
+        .btn-outline:hover {
+            background: rgba(78, 84, 200, 0.05);
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
             }
             
-            // 保存新的计数
-            localStorage.setItem('visitCount', count);
+            .hero-text {
+                max-width: 100%;
+                margin-bottom: 50px;
+            }
             
-            // 更新页面显示
-            document.getElementById('visitCount').textContent = count;
+            .hero-text p {
+                margin: 0 auto 40px;
+            }
+            
+            .hero-btns {
+                justify-content: center;
+            }
+            
+            .hero-image {
+                justify-content: center;
+            }
+            
+            .hero-avatar {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .avatar-placeholder {
+                width: 260px;
+                height: 260px;
+            }
         }
         
-        // 页面加载时更新计数器
-        window.addEventListener('DOMContentLoaded', updateCounter);
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(255, 255, 255, 0.98);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 40px;
+                transition: var(--transition);
+                backdrop-filter: blur(10px);
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links li {
+                margin: 20px 0;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero-text p {
+                font-size: 1.1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-text h1 {
+                font-size: 2.3rem;
+            }
+            
+            .hero-btns {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .hero-avatar {
+                width: 260px;
+                height: 260px;
+            }
+            
+            .avatar-placeholder {
+                width: 220px;
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 第一部分：导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="logo-text">未明空间</div>
+                </a>
+                
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#" class="active">首页</a></li>
+                    <li><a href="#about">关于</a></li>
+                    <li><a href="#skills">技能</a></li>
+                    <li><a href="#projects">项目</a></li>
+                    <li><a href="#contact">联系</a></li>
+                </ul>
+                
+                <div class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 第二部分：英雄区域 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h4>你好，我是</h4>
+                    <h1>未明<br>全栈开发者 & UI设计师</h1>
+                    <p>我专注于创建高效、用户友好的应用程序和网站，将创意转化为现实，为用户提供卓越的数字体验。</p>
+                    <div class="hero-btns">
+                        <a href="#projects" class="btn btn-primary">
+                            <i class="fas fa-laptop-code"></i> 查看作品
+                        </a>
+                        <a href="#contact" class="btn btn-outline">
+                            <i class="fas fa-paper-plane"></i> 联系我
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hero-image">
+                    <div class="hero-avatar">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // 移动端菜单切换
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    // 关闭移动端菜单
+                    navLinks.classList.remove('active');
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
     </script>
 </body>
 </html>
