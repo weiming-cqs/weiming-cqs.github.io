@@ -6,7 +6,6 @@
     <title>娱乐中心 | 未明</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 基础样式 - 从你提供的代码中整合 */
         * {
             margin: 0;
             padding: 0;
@@ -205,6 +204,7 @@
             padding: 20px;
             display: flex;
             justify-content: center;
+            position: relative;
         }
         
         /* 游戏画布样式 */
@@ -231,6 +231,65 @@
             gap: 8px;
         }
         
+        /* 移动端控制按钮 */
+        .mobile-controls {
+            display: none;
+            margin-top: 20px;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            user-select: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .control-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+        
+        .direction-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .horizontal-controls {
+            display: flex;
+            gap: 50px;
+        }
+        
+        /* 高分记录 */
+        .high-scores {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+        }
+        
+        .high-score-item {
+            text-align: center;
+        }
+        
+        .high-score-item span {
+            font-weight: bold;
+            color: #64e3ff;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 768px) {
             .navbar {
@@ -247,6 +306,35 @@
             
             .game-card {
                 max-width: 100%;
+            }
+            
+            #dino-game {
+                width: 100%;
+                height: 150px;
+            }
+            
+            #snake-game {
+                width: 100%;
+                height: 300px;
+            }
+            
+            .mobile-controls {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .game-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .control-btn {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
@@ -288,10 +376,29 @@
                     <button id="dino-start" class="btn"><i class="fas fa-play"></i> 开始游戏</button>
                     <div class="score">得分: <span id="dino-score">0</span></div>
                 </div>
+                
+                <!-- 移动端控制按钮 -->
+                <div class="mobile-controls">
+                    <div class="control-btn" id="jump-btn">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="control-btn" id="crouch-btn">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+                
                 <div class="game-description">
                     <div class="instructions">
                         <h3><i class="fas fa-info-circle"></i> 游戏说明</h3>
-                        <p>控制小恐龙跳过仙人掌障碍！按空格键或上箭头跳跃，按向下箭头蹲下躲避障碍物。</p>
+                        <p>控制小恐龙跳过仙人掌障碍！按空格键或上箭头跳跃，按向下箭头蹲下躲避障碍物。在移动设备上可以使用屏幕上的按钮控制。</p>
+                    </div>
+                    <div class="high-scores">
+                        <div class="high-score-item">
+                            今日最高分: <span id="dino-daily-high">0</span>
+                        </div>
+                        <div class="high-score-item">
+                            历史最高分: <span id="dino-alltime-high">0</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -308,10 +415,39 @@
                     <button id="snake-start" class="btn"><i class="fas fa-play"></i> 开始游戏</button>
                     <div class="score">得分: <span id="snake-score">0</span></div>
                 </div>
+                
+                <!-- 移动端控制按钮 -->
+                <div class="mobile-controls">
+                    <div class="direction-controls">
+                        <div class="control-btn" id="up-btn">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="horizontal-controls">
+                            <div class="control-btn" id="left-btn">
+                                <i class="fas fa-arrow-left"></i>
+                            </div>
+                            <div class="control-btn" id="right-btn">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        <div class="control-btn" id="down-btn">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="game-description">
                     <div class="instructions">
                         <h3><i class="fas fa-info-circle"></i> 游戏说明</h3>
-                        <p>使用方向键控制蛇的移动方向。吃到食物后蛇身会变长，碰到墙壁或自己的身体游戏结束。</p>
+                        <p>使用方向键控制蛇的移动方向。吃到食物后蛇身会变长，碰到墙壁或自己的身体游戏结束。在移动设备上可以使用屏幕上的方向按钮控制。</p>
+                    </div>
+                    <div class="high-scores">
+                        <div class="high-score-item">
+                            今日最高分: <span id="snake-daily-high">0</span>
+                        </div>
+                        <div class="high-score-item">
+                            历史最高分: <span id="snake-alltime-high">0</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -349,11 +485,25 @@
         // 初始化气泡
         createBubbles();
 
+        // 高分记录系统
+        function getDailyKey() {
+            const today = new Date();
+            return `dino-daily-${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+        }
+        
         // 谷歌小恐龙游戏
         const dinoCanvas = document.getElementById('dino-game');
         const dinoCtx = dinoCanvas.getContext('2d');
         const dinoScoreEl = document.getElementById('dino-score');
+        const dinoDailyHighEl = document.getElementById('dino-daily-high');
+        const dinoAlltimeHighEl = document.getElementById('dino-alltime-high');
         const dinoStartBtn = document.getElementById('dino-start');
+        
+        // 加载高分记录
+        let dinoDailyHigh = localStorage.getItem(getDailyKey()) || 0;
+        let dinoAlltimeHigh = localStorage.getItem('dino-alltime-high') || 0;
+        dinoDailyHighEl.textContent = dinoDailyHigh;
+        dinoAlltimeHighEl.textContent = dinoAlltimeHigh;
         
         let dinoGameRunning = false;
         let dinoScore = 0;
@@ -364,16 +514,54 @@
         let obstacleSpeed = 5;
         let obstacleFrequency = 100;
         let frame = 0;
+        let isCrouching = false;
         
+        // 绘制更美观的小恐龙
         function drawDino() {
             dinoCtx.fillStyle = '#333';
-            dinoCtx.fillRect(50, dinoY, 20, 30);
+            
+            // 绘制恐龙身体
+            dinoCtx.fillRect(50, dinoY, 20, isCrouching ? 15 : 30);
+            
+            // 绘制恐龙头部
+            dinoCtx.fillRect(70, dinoY, 15, 10);
+            
+            // 绘制恐龙眼睛
+            dinoCtx.fillStyle = 'white';
+            dinoCtx.fillRect(72, dinoY + 3, 4, 4);
+            
+            // 绘制恐龙腿
+            dinoCtx.fillStyle = '#333';
+            if (!isCrouching) {
+                const legY = frame % 20 < 10 ? dinoY + 25 : dinoY + 28;
+                dinoCtx.fillRect(55, legY, 5, 5);
+                dinoCtx.fillRect(65, legY, 5, 5);
+            } else {
+                dinoCtx.fillRect(50, dinoY + 15, 20, 5);
+            }
         }
         
+        // 绘制更美观的仙人掌障碍物
         function drawObstacles() {
-            dinoCtx.fillStyle = '#2c5';
             for (let obstacle of obstacles) {
-                dinoCtx.fillRect(obstacle.x, dinoCanvas.height - obstacle.height, obstacle.width, obstacle.height);
+                dinoCtx.fillStyle = '#2c5';
+                
+                // 绘制仙人掌主干
+                dinoCtx.fillRect(obstacle.x, dinoCanvas.height - obstacle.height, 12, obstacle.height);
+                
+                // 绘制仙人掌分支
+                dinoCtx.fillRect(obstacle.x - 5, dinoCanvas.height - obstacle.height + 15, 8, 5);
+                dinoCtx.fillRect(obstacle.x + 9, dinoCanvas.height - obstacle.height + 25, 8, 5);
+                
+                // 绘制仙人掌刺
+                dinoCtx.fillStyle = '#1a3';
+                for (let i = 0; i < 3; i++) {
+                    const yPos = dinoCanvas.height - obstacle.height + 10 + i * 15;
+                    dinoCtx.beginPath();
+                    dinoCtx.moveTo(obstacle.x + 6, yPos);
+                    dinoCtx.lineTo(obstacle.x + 6, yPos - 8);
+                    dinoCtx.stroke();
+                }
             }
         }
         
@@ -381,8 +569,8 @@
             dinoVelocity += gravity;
             dinoY += dinoVelocity;
             
-            if (dinoY > dinoCanvas.height - 30) {
-                dinoY = dinoCanvas.height - 30;
+            if (dinoY > dinoCanvas.height - (isCrouching ? 15 : 30)) {
+                dinoY = dinoCanvas.height - (isCrouching ? 15 : 30);
                 dinoVelocity = 0;
             }
         }
@@ -394,15 +582,15 @@
                 // 碰撞检测
                 if (
                     obstacles[i].x < 70 && 
-                    obstacles[i].x + obstacles[i].width > 50 &&
-                    dinoY + 30 > dinoCanvas.height - obstacles[i].height
+                    obstacles[i].x + 12 > 50 &&
+                    dinoY + (isCrouching ? 15 : 30) > dinoCanvas.height - obstacles[i].height
                 ) {
                     endDinoGame();
                     return;
                 }
                 
                 // 移除屏幕外的障碍物
-                if (obstacles[i].x + obstacles[i].width < 0) {
+                if (obstacles[i].x + 12 < 0) {
                     obstacles.splice(i, 1);
                     i--;
                     dinoScore++;
@@ -415,7 +603,6 @@
                 const height = 20 + Math.random() * 30;
                 obstacles.push({
                     x: dinoCanvas.width,
-                    width: 10 + Math.random() * 20,
                     height: height
                 });
                 
@@ -432,22 +619,45 @@
         function drawDinoGame() {
             dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
             
+            // 绘制天空背景
+            dinoCtx.fillStyle = '#87CEEB';
+            dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height - 5);
+            
+            // 绘制云朵
+            dinoCtx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            dinoCtx.beginPath();
+            dinoCtx.arc(100, 40, 15, 0, Math.PI * 2);
+            dinoCtx.arc(120, 35, 20, 0, Math.PI * 2);
+            dinoCtx.arc(140, 40, 15, 0, Math.PI * 2);
+            dinoCtx.fill();
+            
+            dinoCtx.beginPath();
+            dinoCtx.arc(300, 60, 20, 0, Math.PI * 2);
+            dinoCtx.arc(330, 55, 25, 0, Math.PI * 2);
+            dinoCtx.arc(360, 60, 20, 0, Math.PI * 2);
+            dinoCtx.fill();
+            
             // 绘制地面
             dinoCtx.fillStyle = '#777';
             dinoCtx.fillRect(0, dinoCanvas.height - 5, dinoCanvas.width, 5);
             
+            // 绘制地面纹理
+            dinoCtx.strokeStyle = '#666';
+            dinoCtx.lineWidth = 1;
+            for (let i = 0; i < dinoCanvas.width; i += 20) {
+                dinoCtx.beginPath();
+                dinoCtx.moveTo(i, dinoCanvas.height - 5);
+                dinoCtx.lineTo(i, dinoCanvas.height - 3);
+                dinoCtx.stroke();
+            }
+            
             drawDino();
             drawObstacles();
-        }
-        
-        function dinoGameLoop() {
-            if (!dinoGameRunning) return;
             
-            updateDino();
-            updateObstacles();
-            drawDinoGame();
-            
-            requestAnimationFrame(dinoGameLoop);
+            // 绘制分数
+            dinoCtx.fillStyle = '#333';
+            dinoCtx.font = '16px Arial';
+            dinoCtx.fillText(`得分: ${dinoScore}`, dinoCanvas.width - 100, 30);
         }
         
         function startDinoGame() {
@@ -462,6 +672,7 @@
             obstacleSpeed = 5;
             obstacleFrequency = 100;
             frame = 0;
+            isCrouching = false;
             
             dinoStartBtn.innerHTML = '<i class="fas fa-redo"></i> 重新开始';
             
@@ -470,6 +681,20 @@
         
         function endDinoGame() {
             dinoGameRunning = false;
+            
+            // 更新高分记录
+            if (dinoScore > dinoDailyHigh) {
+                dinoDailyHigh = dinoScore;
+                localStorage.setItem(getDailyKey(), dinoDailyHigh);
+                dinoDailyHighEl.textContent = dinoDailyHigh;
+            }
+            
+            if (dinoScore > dinoAlltimeHigh) {
+                dinoAlltimeHigh = dinoScore;
+                localStorage.setItem('dino-alltime-high', dinoAlltimeHigh);
+                dinoAlltimeHighEl.textContent = dinoAlltimeHigh;
+            }
+            
             dinoCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             dinoCtx.fillRect(0, 0, dinoCanvas.width, dinoCanvas.height);
             
@@ -480,21 +705,58 @@
             dinoCtx.fillText(`得分: ${dinoScore}`, dinoCanvas.width / 2, dinoCanvas.height / 2 + 15);
         }
         
+        function dinoJump() {
+            if (dinoY === dinoCanvas.height - (isCrouching ? 15 : 30)) {
+                dinoVelocity = -12;
+            }
+        }
+        
         dinoStartBtn.addEventListener('click', startDinoGame);
         
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' || e.key === 'ArrowUp') {
-                if (dinoY === dinoCanvas.height - 30) {
-                    dinoVelocity = -12;
-                }
+                dinoJump();
             }
+            if (e.key === 'ArrowDown') {
+                isCrouching = true;
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowDown') {
+                isCrouching = false;
+            }
+        });
+        
+        // 移动端控制
+        document.getElementById('jump-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            dinoJump();
+        });
+        
+        document.getElementById('crouch-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isCrouching = true;
+        });
+        
+        document.getElementById('crouch-btn').addEventListener('touchend', (e) => {
+            e.preventDefault();
+            isCrouching = false;
         });
         
         // 贪吃蛇游戏
         const snakeCanvas = document.getElementById('snake-game');
         const snakeCtx = snakeCanvas.getContext('2d');
         const snakeScoreEl = document.getElementById('snake-score');
+        const snakeDailyHighEl = document.getElementById('snake-daily-high');
+        const snakeAlltimeHighEl = document.getElementById('snake-alltime-high');
         const snakeStartBtn = document.getElementById('snake-start');
+        
+        // 加载高分记录
+        let snakeDailyHigh = localStorage.getItem('snake-daily') || 0;
+        let snakeAlltimeHigh = localStorage.getItem('snake-alltime-high') || 0;
+        snakeDailyHighEl.textContent = snakeDailyHigh;
+        snakeAlltimeHighEl.textContent = snakeAlltimeHigh;
         
         const gridSize = 20;
         const gridWidth = snakeCanvas.width / gridSize;
@@ -532,30 +794,84 @@
         }
         
         function drawSnake() {
-            snakeCtx.fillStyle = '#64e3ff';
+            // 绘制蛇身
             for (let i = 0; i < snake.length; i++) {
-                snakeCtx.fillRect(
+                const gradient = snakeCtx.createLinearGradient(
+                    snake[i].x * gridSize,
+                    snake[i].y * gridSize,
+                    snake[i].x * gridSize + gridSize,
+                    snake[i].y * gridSize + gridSize
+                );
+                
+                if (i === 0) {
+                    // 蛇头
+                    gradient.addColorStop(0, '#2a8ba8');
+                    gradient.addColorStop(1, '#1a6a7f');
+                } else {
+                    // 蛇身
+                    gradient.addColorStop(0, '#64e3ff');
+                    gradient.addColorStop(1, '#3fc3e0');
+                }
+                
+                snakeCtx.fillStyle = gradient;
+                
+                snakeCtx.beginPath();
+                snakeCtx.roundRect(
                     snake[i].x * gridSize, 
                     snake[i].y * gridSize, 
                     gridSize, 
-                    gridSize
+                    gridSize,
+                    5
                 );
+                snakeCtx.fill();
                 
-                // 绘制蛇身内部
-                snakeCtx.fillStyle = '#b6f3ff';
+                // 蛇头眼睛
+                if (i === 0) {
+                    snakeCtx.fillStyle = 'white';
+                    
+                    // 根据方向确定眼睛位置
+                    let eyeX1, eyeY1, eyeX2, eyeY2;
+                    
+                    switch (direction) {
+                        case 'up':
+                            eyeX1 = snake[i].x * gridSize + 5;
+                            eyeY1 = snake[i].y * gridSize + 5;
+                            eyeX2 = snake[i].x * gridSize + gridSize - 5;
+                            eyeY2 = snake[i].y * gridSize + 5;
+                            break;
+                        case 'down':
+                            eyeX1 = snake[i].x * gridSize + 5;
+                            eyeY1 = snake[i].y * gridSize + gridSize - 5;
+                            eyeX2 = snake[i].x * gridSize + gridSize - 5;
+                            eyeY2 = snake[i].y * gridSize + gridSize - 5;
+                            break;
+                        case 'left':
+                            eyeX1 = snake[i].x * gridSize + 5;
+                            eyeY1 = snake[i].y * gridSize + 5;
+                            eyeX2 = snake[i].x * gridSize + 5;
+                            eyeY2 = snake[i].y * gridSize + gridSize - 5;
+                            break;
+                        case 'right':
+                            eyeX1 = snake[i].x * gridSize + gridSize - 5;
+                            eyeY1 = snake[i].y * gridSize + 5;
+                            eyeX2 = snake[i].x * gridSize + gridSize - 5;
+                            eyeY2 = snake[i].y * gridSize + gridSize - 5;
+                            break;
+                    }
+                    
+                    snakeCtx.beginPath();
+                    snakeCtx.arc(eyeX1, eyeY1, 2, 0, Math.PI * 2);
+                    snakeCtx.fill();
+                    
+                    snakeCtx.beginPath();
+                    snakeCtx.arc(eyeX2, eyeY2, 2, 0, Math.PI * 2);
+                    snakeCtx.fill();
+                }
             }
-            
-            // 蛇头
-            snakeCtx.fillStyle = '#2a8ba8';
-            snakeCtx.fillRect(
-                snake[0].x * gridSize, 
-                snake[0].y * gridSize, 
-                gridSize, 
-                gridSize
-            );
         }
         
         function drawFood() {
+            // 绘制食物（苹果）
             snakeCtx.fillStyle = '#ff6b6b';
             snakeCtx.beginPath();
             snakeCtx.arc(
@@ -563,6 +879,28 @@
                 food.y * gridSize + gridSize / 2,
                 gridSize / 2,
                 0,
+                Math.PI * 2
+            );
+            snakeCtx.fill();
+            
+            // 苹果茎
+            snakeCtx.strokeStyle = '#5d8c47';
+            snakeCtx.lineWidth = 2;
+            snakeCtx.beginPath();
+            snakeCtx.moveTo(food.x * gridSize + gridSize / 2, food.y * gridSize + 2);
+            snakeCtx.lineTo(food.x * gridSize + gridSize / 2 - 3, food.y * gridSize - 3);
+            snakeCtx.stroke();
+            
+            // 苹果叶子
+            snakeCtx.fillStyle = '#8bc34a';
+            snakeCtx.beginPath();
+            snakeCtx.ellipse(
+                food.x * gridSize + gridSize / 2 - 5, 
+                food.y * gridSize - 2,
+                4, 
+                6, 
+                Math.PI / 4, 
+                0, 
                 Math.PI * 2
             );
             snakeCtx.fill();
@@ -642,12 +980,20 @@
             snakeCtx.clearRect(0, 0, snakeCanvas.width, snakeCanvas.height);
             
             // 绘制背景
-            snakeCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            const gradient = snakeCtx.createLinearGradient(0, 0, snakeCanvas.width, snakeCanvas.height);
+            gradient.addColorStop(0, 'rgba(30, 87, 153, 0.3)');
+            gradient.addColorStop(1, 'rgba(41, 137, 216, 0.3)');
+            snakeCtx.fillStyle = gradient;
             snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
             
             drawGrid();
             drawSnake();
             drawFood();
+            
+            // 绘制分数
+            snakeCtx.fillStyle = '#fff';
+            snakeCtx.font = '16px Arial';
+            snakeCtx.fillText(`得分: ${snakeScore}`, 10, 20);
         }
         
         function updateSnakeGame() {
@@ -680,6 +1026,19 @@
             snakeGameRunning = false;
             clearInterval(gameInterval);
             
+            // 更新高分记录
+            if (snakeScore > snakeDailyHigh) {
+                snakeDailyHigh = snakeScore;
+                localStorage.setItem('snake-daily', snakeDailyHigh);
+                snakeDailyHighEl.textContent = snakeDailyHigh;
+            }
+            
+            if (snakeScore > snakeAlltimeHigh) {
+                snakeAlltimeHigh = snakeScore;
+                localStorage.setItem('snake-alltime-high', snakeAlltimeHigh);
+                snakeAlltimeHighEl.textContent = snakeAlltimeHigh;
+            }
+            
             snakeCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
             snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
             
@@ -710,6 +1069,53 @@
                     break;
             }
         });
+        
+        // 移动端控制
+        document.getElementById('up-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (direction !== 'down') nextDirection = 'up';
+        });
+        
+        document.getElementById('down-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (direction !== 'up') nextDirection = 'down';
+        });
+        
+        document.getElementById('left-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (direction !== 'right') nextDirection = 'left';
+        });
+        
+        document.getElementById('right-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (direction !== 'left') nextDirection = 'right';
+        });
+        
+        // 添加圆角矩形绘制方法
+        CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radius) {
+            if (width < 2 * radius) radius = width / 2;
+            if (height < 2 * radius) radius = height / 2;
+            
+            this.beginPath();
+            this.moveTo(x + radius, y);
+            this.arcTo(x + width, y, x + width, y + height, radius);
+            this.arcTo(x + width, y + height, x, y + height, radius);
+            this.arcTo(x, y + height, x, y, radius);
+            this.arcTo(x, y, x + width, y, radius);
+            this.closePath();
+            return this;
+        };
+        
+        // 游戏循环
+        function dinoGameLoop() {
+            if (!dinoGameRunning) return;
+            
+            updateDino();
+            updateObstacles();
+            drawDinoGame();
+            
+            requestAnimationFrame(dinoGameLoop);
+        }
     </script>
 </body>
 </html>
