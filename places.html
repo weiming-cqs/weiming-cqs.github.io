@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub访问者地图 | 累计统计</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #1a2a6c;
+            --accent: #4dabf7;
+            --light: #ecf0f1;
+            --dark: #1e272e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .github-banner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 15px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            z-index: 100;
+            text-decoration: none;
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+        
+        .github-banner:hover {
+            background: rgba(0, 0, 0, 0.6);
+            transform: translateY(-2px);
+        }
+        
+        .pulse {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .map-container {
+            grid-column: 1 / -1;
+            height: 600px;
+        }
+        
+        #map {
+            height: 100%;
+            border-radius: 10px;
+            z-index: 10;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .stat-card {
+            background: rgba(30, 40, 80, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(40, 60, 120, 0.6);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .country-list {
+            background: rgba(30, 40, 80, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        
+        .country-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+        
+        .country-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .country-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .flag {
+            width: 24px;
+            height: 16px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            grid-column: 1 / -1;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            grid-column: 1 / -1;
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        .privacy-note {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 1.2rem;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--accent);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <a href="https://github.com/yourusername/visitor-map" class="github-banner" target="_blank">
+        <i class="fab fa-github"></i>
+        <span class="pulse"></span>
+        GitHub项目
+    </a>
+    
+    <div class="container">
+        <header>
+            <h1>GitHub访问者地图</h1>
+            <p class="subtitle">基于GitHub Actions的累计访问统计 | 数据永久存储</p>
+        </header>
+        
+        <div class="panel map-container">
+            <div id="map">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    正在加载地图数据...
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2><i class="fas fa-globe-americas"></i> 全球访问统计</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-users fa-2x"></i>
+                    <div class="stat-value" id="total-visits">0</div>
+                    <div class="stat-label">总访问次数</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-flag fa-2x"></i>
+                    <div class="stat-value" id="unique-countries">0</div>
+                    <div class="stat-label">国家/地区</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-day fa-2x"></i>
+                    <div class="stat-value" id="today-visits">0</div>
+                    <div class="stat-label">今日访问</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-sync-alt fa-2x"></i>
+                    <div class="stat-value" id="realtime">0</div>
+                    <div class="stat-label">当前在线</div>
+                </div>
+            </div>
+            
+            <h3><i class="fas fa-list-ol"></i> 国家/地区访问排名</h3>
+            <div class="country-list" id="country-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    正在加载国家数据...
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel">
+            <h2><i class="fas fa-history"></i> 最近访问记录</h2>
+            <div id="recent-visits">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    正在加载访问记录...
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel chart-container">
+            <h2><i class="fas fa-chart-line"></i> 访问趋势</h2>
+            <canvas id="visits-chart"></canvas>
+        </div>
+        
+        <footer>
+            <p>© 2025 GitHub访问者地图 | 完全基于GitHub Pages和GitHub Actions构建 | 数据永久存储在GitHub仓库中</p>
+            <div class="privacy-note">
+                <p><i class="fas fa-shield-alt"></i> 隐私声明: 本页面仅收集访问者的国家位置信息用于统计目的，不收集任何个人身份信息。</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // 初始化变量
+        let map, visitsChart;
+        let countryData = {};
+        let totalVisits = 0;
+        let uniqueCountries = new Set();
+        let todayVisits = 0;
+        let realtimeVisitors = 0;
+        
+        // 国家代码到名称的映射
+        const countryNames = {
+            "US": "美国",
+            "GB": "英国",
+            "DE": "德国",
+            "FR": "法国",
+            "CA": "加拿大",
+            "AU": "澳大利亚",
+            "JP": "日本",
+            "BR": "巴西",
+            "CN": "中国",
+            "IN": "印度",
+            "RU": "俄罗斯"
+        };
+        
+        // 初始化地图
+        function initMap() {
+            map = L.map('map').setView([20, 0], 2);
+            
+            // 添加地图图层
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // 移除加载提示
+            document.querySelector('#map .loading').remove();
+        }
+        
+        // 更新国家列表
+        function updateCountryList() {
+            const countryList = document.getElementById('country-list');
+            countryList.innerHTML = `
+                <div class="country-header">
+                    <span>国家/地区</span>
+                    <span>访问次数</span>
+                </div>
+            `;
+            
+            // 将国家数据转换为数组并排序
+            const sortedCountries = Object.entries(countryData)
+                .sort((a, b) => b[1].count - a[1].count);
+            
+            // 只显示前10个国家
+            sortedCountries.slice(0, 10).forEach(([code, data]) => {
+                const countryItem = document.createElement('div');
+                countryItem.className = 'country-item';
+                countryItem.innerHTML = `
+                    <div class="country-name">
+                        <img src="https://flagcdn.com/w20/${code.toLowerCase()}.png" class="flag" alt="${data.name}">
+                        <span>${data.name}</span>
+                    </div>
+                    <span>${data.count}</span>
+                `;
+                countryList.appendChild(countryItem);
+            });
+            
+            // 显示更多国家链接
+            if (sortedCountries.length > 10) {
+                const moreLink = document.createElement('div');
+                moreLink.className = 'country-item';
+                moreLink.style.justifyContent = 'center';
+                moreLink.innerHTML = `<a href="#" style="color: var(--accent);">显示全部 ${sortedCountries.length} 个国家/地区</a>`;
+                countryList.appendChild(moreLink);
+            }
+        }
+        
+        // 更新最近访问记录
+        function updateRecentVisits() {
+            const recentVisits = document.getElementById('recent-visits');
+            recentVisits.innerHTML = '';
+            
+            // 获取最近的访问记录
+            const allVisits = [];
+            Object.values(countryData).forEach(country => {
+                country.visits.forEach(visit => {
+                    allVisits.push({
+                        country: country.name,
+                        code: country.code,
+                        timestamp: visit.timestamp
+                    });
+                });
+            });
+            
+            // 按时间排序
+            const sortedVisits = allVisits.sort((a, b) => 
+                new Date(b.timestamp) - new Date(a.timestamp)
+            ).slice(0, 10);
+            
+            // 添加访问记录
+            sortedVisits.forEach(visit => {
+                const timeAgo = getTimeAgo(new Date(visit.timestamp));
+                const visitItem = document.createElement('div');
+                visitItem.className = 'country-item';
+                visitItem.innerHTML = `
+                    <div class="country-name">
+                        <img src="https://flagcdn.com/w20/${visit.code.toLowerCase()}.png" class="flag" alt="${visit.country}">
+                        <span>${visit.country}</span>
+                    </div>
+                    <span>${timeAgo}</span>
+                `;
+                recentVisits.appendChild(visitItem);
+            });
+        }
+        
+        // 计算时间差
+        function getTimeAgo(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000); // 秒数差
+            
+            if (diff < 60) return "刚刚";
+            if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
+            return `${Math.floor(diff / 86400)}天前`;
+        }
+        
+        // 更新图表
+        function updateChart() {
+            const ctx = document.getElementById('visits-chart').getContext('2d');
+            
+            // 获取最近7天的数据
+            const dates = [];
+            const counts = [];
+            const now = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(now.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                dates.push(dateStr);
+                
+                // 计算每天的访问量
+                let dayCount = 0;
+                Object.values(countryData).forEach(country => {
+                    country.visits.forEach(visit => {
+                        if (visit.timestamp.startsWith(dateStr)) {
+                            dayCount++;
+                        }
+                    });
+                });
+                
+                counts.push(dayCount);
+            }
+            
+            if (visitsChart) {
+                visitsChart.destroy();
+            }
+            
+            visitsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates.map(d => d.substring(5)), // 只显示月-日
+                    datasets: [{
+                        label: '每日访问量',
+                        data: counts,
+                        borderColor: '#4dabf7',
+                        backgroundColor: 'rgba(77, 171, 247, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#fff',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 更新统计信息
+        function updateStats() {
+            document.getElementById('total-visits').textContent = totalVisits;
+            document.getElementById('unique-countries').textContent = uniqueCountries.size;
+            document.getElementById('today-visits').textContent = todayVisits;
+            document.getElementById('realtime').textContent = realtimeVisitors;
+        }
+        
+        // 更新地图标记
+        function updateMapMarkers() {
+            // 清除所有现有标记
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+            
+            // 添加新标记
+            Object.values(countryData).forEach(country => {
+                // 为每个国家添加标记
+                const marker = L.marker([country.lat, country.lng]).addTo(map);
+                marker.bindPopup(`
+                    <div style="text-align:center;">
+                        <b>${country.name}</b><br>
+                        访问次数: ${country.count}<br>
+                        最近访问: ${getTimeAgo(new Date(country.lastVisit))}
+                    </div>
+                `);
+            });
+        }
+        
+        // 模拟从GitHub加载数据
+        function loadData() {
+            // 在实际应用中，这里会从GitHub仓库获取JSON数据
+            // 以下是模拟数据
+            const mockData = {
+                totalVisits: 1328,
+                countries: {
+                    "US": {
+                        name: "美国",
+                        code: "US",
+                        count: 428,
+                        lat: 37.0902,
+                        lng: -95.7129,
+                        lastVisit: "2025-07-13T09:15:00Z",
+                        visits: [
+                            {timestamp: "2025-07-13T09:15:00Z"},
+                            {timestamp: "2025-07-13T08:45:00Z"}
+                        ]
+                    },
+                    "GB": {
+                        name: "英国",
+                        code: "GB",
+                        count: 196,
+                        lat: 55.3781,
+                        lng: -3.4360,
+                        lastVisit: "2025-07-13T08:30:00Z",
+                        visits: [
+                            {timestamp: "2025-07-13T08:30:00Z"},
+                            {timestamp: "2025-07-12T14:20:00Z"}
+                        ]
+                    },
+                    "DE": {
+                        name: "德国",
+                        code: "DE",
+                        count: 142,
+                        lat: 51.1657,
+                        lng: 10.4515,
+                        lastVisit: "2025-07-13T07:45:00Z",
+                        visits: [
+                            {timestamp: "2025-07-13T07:45:00Z"},
+                            {timestamp: "2025-07-12T11:10:00Z"}
+                        ]
+                    },
+                    "CN": {
+                        name: "中国",
+                        code: "CN",
+                        count: 127,
+                        lat: 35.8617,
+                        lng: 104.1954,
+                        lastVisit: "2025-07-13T09:04:00Z",
+                        visits: [
+                            {timestamp: "2025-07-13T09:04:00Z"},
+                            {timestamp: "2025-07-13T08:31:00Z"}
+                        ]
+                    }
+                }
+            };
+            
+            // 处理数据
+            countryData = mockData.countries;
+            totalVisits = mockData.totalVisits;
+            uniqueCountries = new Set(Object.keys(mockData.countries));
+            
+            // 计算今日访问量
+            const today = new Date().toISOString().split('T')[0];
+            todayVisits = 0;
+            Object.values(countryData).forEach(country => {
+                country.visits.forEach(visit => {
+                    if (visit.timestamp.startsWith(today)) {
+                        todayVisits++;
+                    }
+                });
+            });
+            
+            // 模拟实时访问者
+            realtimeVisitors = Object.keys(countryData).length;
+            
+            // 更新UI
+            updateStats();
+            updateCountryList();
+            updateRecentVisits();
+            updateChart();
+            updateMapMarkers();
+            
+            // 移除所有加载提示
+            document.querySelectorAll('.loading').forEach(el => el.remove());
+        }
+        
+        // 记录当前访问
+        async function logVisit() {
+            try {
+                // 获取访问者IP信息
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                
+                // 获取地理位置
+                const geoResponse = await fetch(`https://ipapi.co/${ipData.ip}/country_code/`);
+                const countryCode = await geoResponse.text();
+                
+                // 在实际应用中，这里会将数据发送到GitHub Actions进行存储
+                // 模拟记录当前访问
+                if (countryCode && countryCode.length === 2) {
+                    realtimeVisitors++;
+                    document.getElementById('realtime').textContent = realtimeVisitors;
+                    
+                    // 在实际应用中，这里会更新数据并重新加载
+                }
+            } catch (error) {
+                console.error('记录访问时出错:', error);
+            }
+        }
+        
+        // 初始化页面
+        window.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadData();
+            logVisit();
+            
+            // 模拟实时更新
+            setInterval(() => {
+                // 在实际应用中，这里会从GitHub重新加载数据
+                // 模拟新访问
+                if (Math.random() > 0.7) {
+                    realtimeVisitors++;
+                    document.getElementById('realtime').textContent = realtimeVisitors;
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
