@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未明 - 联系我</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e5799, #2989d8, #7db9e8);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 气泡动画 */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: rise linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        @keyframes rise {
+            to {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #64e3ff;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 主内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .page-title h1 {
+            font-size: 3rem;
+            display: inline-block;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #1e5799, #2989d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+        }
+        
+        .page-title::before,
+        .page-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64e3ff, transparent);
+        }
+        
+        .page-title::before {
+            left: 0;
+        }
+        
+        .page-title::after {
+            right: 0;
+        }
+        
+        /* 联系区域 */
+        .contact-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        /* 联系信息卡片 */
+        .contact-info {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #64e3ff, #7d7dff);
+        }
+        
+        .contact-info h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #64e3ff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .contact-item:hover {
+            transform: translateX(10px);
+        }
+        
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(100, 227, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.8rem;
+            color: #64e3ff;
+            flex-shrink: 0;
+        }
+        
+        .contact-details h3 {
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        
+        .contact-details p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .copy-btn {
+            margin-left: 15px;
+            background: transparent;
+            border: none;
+            color: #64e3ff;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.2);
+            color: #fff;
+        }
+        
+        /* 联系表单 */
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+        
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #64e3ff, #7d7dff);
+        }
+        
+        .contact-form h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #64e3ff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #64e3ff;
+            background: rgba(100, 227, 255, 0.1);
+            box-shadow: 0 0 10px rgba(100, 227, 255, 0.3);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #64e3ff, #7d7dff);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .submit-btn:hover::after {
+            left: 100%;
+        }
+        
+        /* 社交链接 */
+        .social-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 40px;
+        }
+        
+        .social-section h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #64e3ff;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+        
+        .social-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .social-link:hover {
+            transform: translateY(-10px);
+            background: rgba(100, 227, 255, 0.2);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .social-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(100, 227, 255, 0.2);
+            border-radius: 50%;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .social-name {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 80px;
+            background: rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .social-links {
+                gap: 15px;
+            }
+            
+            .social-link {
+                width: 100px;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.95rem;
+            }
+            
+            .page-title h1 {
+                font-size: 2.2rem;
+            }
+            
+            .page-title::before,
+            .page-title::after {
+                width: 20%;
+            }
+            
+            .contact-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .contact-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .social-link {
+                width: 90px;
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 气泡背景 -->
+    <div class="bubbles"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-envelope"></i>
+            <span>未明 | 联系我</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="2.html">关于我</a>
+            <a href="3.html">作品集</a>
+            <a href="#" class="active">联系我</a>
+            <a href="5.html">特别心意</a>
+        </div>
+    </nav>
+    
+    <!-- 主内容区 -->
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-title">
+            <h1>联系我</h1>
+        </div>
+        
+        <p style="text-align: center; font-size: 1.2rem; max-width: 800px; margin: 0 auto 50px; line-height: 1.7; opacity: 0.9;">
+            如果您有任何问题、合作意向或只是想聊聊天，欢迎随时联系我！我会尽快回复您的消息。
+        </p>
+        
+        <!-- 联系区域 -->
+        <div class="contact-container">
+            <!-- 联系信息 -->
+            <div class="contact-info">
+                <h2><i class="fas fa-address-book"></i> 联系方式</h2>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>电话</h3>
+                        <p id="phone">132****3550</p>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('phone', '13207693550')">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>电子邮箱</h3>
+                        <p id="email">cqs****14c@163.com</p>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('email', 'cqs114514c@163.com')">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fab fa-qq"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>QQ</h3>
+                        <p id="qq">2754****67</p>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('qq', '2754368967')">
+                        <i class="fas fa-copy"></i> 复制
+                    </button>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>所在地</h3>
+                        <p>中国 · 天津</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 联系表单 -->
+            <div class="contact-form">
+                <h2><i class="fas fa-paper-plane"></i> 发送消息</h2>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">您的姓名</label>
+                        <input type="text" id="name" class="form-control" placeholder="请输入您的姓名" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">您的邮箱</label>
+                        <input type="email" id="userEmail" class="form-control" placeholder="请输入您的邮箱" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">主题</label>
+                        <input type="text" id="subject" class="form-control" placeholder="请输入消息主题" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">您的消息</label>
+                        <textarea id="message" class="form-control" placeholder="请输入您的消息内容..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">发送消息 <i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- 社交链接 -->
+        <div class="social-section">
+            <h2><i class="fas fa-share-alt"></i> 社交媒体</h2>
+            
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <div class="social-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <span class="social-name">GitHub</span>
+                </a>
+                
+                <a href="#" class="social-link">
+                    <div class="social-icon">
+                        <i class="fab fa-qq"></i>
+                    </div>
+                    <span class="social-name">QQ</span>
+                </a>
+                
+                <a href="#" class="social-link">
+                    <div class="social-icon">
+                        <i class="fab fa-weixin"></i>
+                    </div>
+                    <span class="social-name">微信</span>
+                </a>
+                
+                <a href="#" class="social-link">
+                    <div class="social-icon">
+                        <i class="fab fa-bilibili"></i>
+                    </div>
+                    <span class="social-name">B站</span>
+                </a>
+                
+                <a href="#" class="social-link">
+                    <div class="social-icon">
+                        <i class="fab fa-codepen"></i>
+                    </div>
+                    <span class="social-name">CodePen</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer>
+        <p>© 2025 未明 - 学生开发者 | 随时欢迎交流与联系</p>
+    </footer>
+
+    <script>
+        // 气泡动画生成
+        function createBubbles() {
+            const bubblesContainer = document.querySelector('.bubbles');
+            const bubbleCount = 30;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // 随机大小 (10px 到 80px)
+                const size = Math.random() * 70 + 10;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // 随机位置
+                bubble.style.left = `${Math.random() * 100}%`;
+                
+                // 随机动画时长 (8s 到 20s)
+                const duration = Math.random() * 12 + 8;
+                bubble.style.animationDuration = `${duration}s`;
+                
+                // 随机动画延迟 (0s 到 5s)
+                const delay = Math.random() * 5;
+                bubble.style.animationDelay = `${delay}s`;
+                
+                // 随机透明度
+                bubble.style.opacity = Math.random() * 0.4 + 0.1;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+        
+        // 复制到剪贴板
+        function copyToClipboard(elementId, fullText) {
+            const tempInput = document.createElement('input');
+            tempInput.value = fullText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            // 显示复制成功提示
+            const element = document.getElementById(elementId);
+            const originalText = element.textContent;
+            element.textContent = fullText;
+            
+            // 添加视觉反馈
+            element.style.color = '#64e3ff';
+            element.style.fontWeight = 'bold';
+            element.style.transition = 'all 0.3s';
+            
+            setTimeout(() => {
+                element.textContent = originalText;
+                element.style.color = '';
+                element.style.fontWeight = '';
+            }, 2000);
+        }
+        
+        // 表单提交处理
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单值
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('userEmail').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // 在这里可以添加表单提交逻辑
+            // 例如发送到服务器或发送邮件
+            
+            // 显示成功消息
+            alert(`感谢您的留言，${name}！\n我已收到您的消息，会尽快回复您。`);
+            
+            // 重置表单
+            this.reset();
+        });
+        
+        // 初始化页面
+        window.onload = function() {
+            createBubbles();
+            
+            // 设置当前页面导航项为激活状态
+            const currentPage = document.location.pathname.split('/').pop() || 'index.html';
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (currentPage === linkPage || (currentPage === '' && linkPage === 'index.html')) {
+                    link.style.background = 'rgba(100, 227, 255, 0.3)';
+                    link.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+                }
+            });
+        };
+    </script>
+</body>
+</html>
