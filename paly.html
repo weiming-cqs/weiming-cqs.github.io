@@ -21,7 +21,7 @@
             position: relative;
         }
 
-        /* 气泡动画背景 */
+        /* 气泡动画背景 - 基于第一张图片 */
         .bubbles {
             position: fixed;
             width: 100%;
@@ -140,13 +140,13 @@
             border-radius: 4px;
         }
 
-        /* 游戏中心样式 - 针对移动端优化 */
+        /* 游戏中心样式 */
         .games-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
             gap: 40px;
             padding: 0 20px 40px;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -311,6 +311,9 @@
         
         /* 响应式优化 */
         @media (max-width: 900px) {
+            .games-container {
+                grid-template-columns: 1fr;
+            }
             .navbar {
                 padding: 15px 20px;
             }
@@ -387,7 +390,7 @@
     </style>
 </head>
 <body>
-    <!-- 气泡背景 -->
+    <!-- 气泡背景 - 基于第一张图片 -->
     <div class="bubbles" id="bubbles"></div>
     
     <!-- 导航栏 - 基于第三张图片 -->
@@ -429,7 +432,7 @@
                     </div>
                 </div>
                 <div class="instructions">
-                    <p>控制蛇吃掉食物，避免撞到墙壁或自己的身体！</p>
+                    <p>使用方向键 ↑ → ↓ ← 控制蛇移动，吃到食物增加长度</p>
                 </div>
                 <div class="mobile-controls" id="snakeControls">
                     <button class="mobile-btn" id="snakeUp"><i class="fas fa-arrow-up"></i></button>
@@ -444,7 +447,7 @@
             </div>
         </div>
 
-        <!-- 恐龙游戏 -->
+        <!-- 恐龙游戏 - 优化版 -->
         <div class="game-card">
             <div class="game-header">
                 <i class="fas fa-running"></i> 恐龙跑酷
@@ -462,7 +465,7 @@
                     </div>
                 </div>
                 <div class="instructions">
-                    <p>帮助小恐龙避开障碍物，跑得越远得分越高！</p>
+                    <p>按空格键或 ↑ 键跳跃，避开仙人掌障碍物</p>
                 </div>
                 <div class="mobile-controls">
                     <button class="mobile-btn jump-btn" id="dinoJump"><i class="fas fa-arrow-up"></i> 跳跃</button>
@@ -476,7 +479,7 @@
     </div>
     
     <div class="game-footer">
-        <p>© 2023 未明工作室 | 移动端优化游戏体验</p>
+        <p>© 2023 未明工作室 | 恐龙模型优化版</p>
     </div>
 
     <script>
@@ -771,19 +774,19 @@
         // 游戏变量
         const dino = {
             x: 50,
-            y: dinoCanvas.height - 120,
-            width: 60,
-            height: 80,
+            y: dinoCanvas.height - 100,
+            width: 40,
+            height: 60,
             jumping: false,
             jumpVelocity: 0,
-            groundY: dinoCanvas.height - 120
+            groundY: dinoCanvas.height - 100
         };
         
         let obstacles = [];
         let dinoGameRunning = false;
         let dinoGameLoop;
         let dinoScoreValue = 0;
-        let gameSpeed = 8;
+        let gameSpeed = 5;
         let frameCount = 0;
         let lastObstacleTime = 0;
         const obstacleInterval = 1500; // 障碍物生成间隔(毫秒)
@@ -795,7 +798,7 @@
             dino.jumpVelocity = 0;
             obstacles = [];
             dinoScoreValue = 0;
-            gameSpeed = 8;
+            gameSpeed = 5;
             frameCount = 0;
             lastObstacleTime = 0;
             dinoGameRunning = true;
@@ -805,7 +808,7 @@
             drawDino();
         }
         
-        // 绘制恐龙
+        // 绘制恐龙 - 优化后的可爱版
         function drawDino() {
             // 清除画布
             dinoCtx.fillStyle = '#0a1c2f';
@@ -813,12 +816,12 @@
             
             // 绘制地面
             dinoCtx.fillStyle = '#555';
-            dinoCtx.fillRect(0, dinoCanvas.height - 20, dinoCanvas.width, 20);
+            dinoCtx.fillRect(0, dinoCanvas.height - 10, dinoCanvas.width, 10);
             
             // 绘制地面纹理
             dinoCtx.fillStyle = '#666';
             for (let i = 0; i < dinoCanvas.width; i += 20) {
-                dinoCtx.fillRect(i, dinoCanvas.height - 20, 10, 5);
+                dinoCtx.fillRect(i, dinoCanvas.height - 10, 10, 3);
             }
             
             // 绘制云朵
@@ -827,41 +830,49 @@
             dinoCtx.fillRect(300 - (frameCount/8) % dinoCanvas.width, 90, 100, 30);
             dinoCtx.fillRect(500 - (frameCount/12) % dinoCanvas.width, 70, 60, 20);
             
-            // 绘制恐龙身体
+            // 绘制恐龙身体 - 优化为更可爱的卡通风格
             dinoCtx.fillStyle = '#4CAF50';
             dinoCtx.shadowColor = '#4CAF50';
             dinoCtx.shadowBlur = 10;
             
             // 身体
-            dinoCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
+            dinoCtx.beginPath();
+            dinoCtx.arc(dino.x + 20, dino.y + 20, 20, 0, Math.PI * 2);
+            dinoCtx.fill();
             
             // 头部
-            dinoCtx.fillRect(dino.x + dino.width - 10, dino.y - 20, 40, 30);
+            dinoCtx.beginPath();
+            dinoCtx.arc(dino.x + 40, dino.y + 15, 15, 0, Math.PI * 2);
+            dinoCtx.fill();
             
             // 眼睛
             dinoCtx.fillStyle = 'white';
-            dinoCtx.fillRect(dino.x + dino.width + 20, dino.y - 15, 8, 8);
+            dinoCtx.beginPath();
+            dinoCtx.arc(dino.x + 45, dino.y + 12, 4, 0, Math.PI * 2);
+            dinoCtx.fill();
+            
             dinoCtx.fillStyle = 'black';
-            dinoCtx.fillRect(dino.x + dino.width + 23, dino.y - 13, 4, 4);
+            dinoCtx.beginPath();
+            dinoCtx.arc(dino.x + 46, dino.y + 12, 2, 0, Math.PI * 2);
+            dinoCtx.fill();
             
             // 嘴巴
             dinoCtx.strokeStyle = '#E91E63';
-            dinoCtx.lineWidth = 3;
+            dinoCtx.lineWidth = 2;
             dinoCtx.beginPath();
-            dinoCtx.moveTo(dino.x + dino.width + 15, dino.y);
-            dinoCtx.lineTo(dino.x + dino.width + 30, dino.y);
+            dinoCtx.arc(dino.x + 45, dino.y + 18, 5, 0.2, Math.PI * 0.8);
             dinoCtx.stroke();
             
             // 腿
             dinoCtx.fillStyle = '#4CAF50';
-            dinoCtx.fillRect(dino.x + 10, dino.y + dino.height, 15, 30);
-            dinoCtx.fillRect(dino.x + dino.width - 25, dino.y + dino.height, 15, 30);
+            dinoCtx.fillRect(dino.x + 10, dino.y + 35, 8, 25);
+            dinoCtx.fillRect(dino.x + 25, dino.y + 35, 8, 25);
             
             // 尾巴
             dinoCtx.beginPath();
-            dinoCtx.moveTo(dino.x - 20, dino.y + dino.height/2);
-            dinoCtx.lineTo(dino.x, dino.y + dino.height/2 - 10);
-            dinoCtx.lineTo(dino.x, dino.y + dino.height/2 + 10);
+            dinoCtx.moveTo(dino.x, dino.y + 20);
+            dinoCtx.lineTo(dino.x - 10, dino.y + 15);
+            dinoCtx.lineTo(dino.x - 10, dino.y + 25);
             dinoCtx.closePath();
             dinoCtx.fill();
             
@@ -876,22 +887,8 @@
                 // 仙人掌刺
                 dinoCtx.beginPath();
                 dinoCtx.moveTo(obstacle.x + obstacle.width/2, obstacle.y);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 10, obstacle.y - 15);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 10, obstacle.y - 15);
-                dinoCtx.closePath();
-                dinoCtx.fill();
-                
-                dinoCtx.beginPath();
-                dinoCtx.moveTo(obstacle.x + obstacle.width/2 - 5, obstacle.y + 20);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 15, obstacle.y + 5);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 5, obstacle.y + 5);
-                dinoCtx.closePath();
-                dinoCtx.fill();
-                
-                dinoCtx.beginPath();
-                dinoCtx.moveTo(obstacle.x + obstacle.width/2 + 5, obstacle.y + 20);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 15, obstacle.y + 5);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 5, obstacle.y + 5);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 8, obstacle.y - 12);
+                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 8, obstacle.y - 12);
                 dinoCtx.closePath();
                 dinoCtx.fill();
             }
@@ -905,7 +902,7 @@
             dinoScore.innerHTML = `<i class="fas fa-trophy"></i> 得分: ${Math.floor(dinoScoreValue)}`;
             
             // 每10秒提升游戏速度
-            if (frameCount % 600 === 0 && gameSpeed < 15) {
+            if (frameCount % 600 === 0 && gameSpeed < 12) {
                 gameSpeed += 0.5;
             }
             
@@ -923,11 +920,11 @@
             
             // 生成新障碍物 - 使用时间间隔控制
             if (now - lastObstacleTime > obstacleInterval && obstacles.length < 3) {
-                const height = 50 + Math.random() * 50;
+                const height = 40 + Math.random() * 40;
                 obstacles.push({
                     x: dinoCanvas.width,
-                    y: dinoCanvas.height - height - 20,
-                    width: 25,
+                    y: dinoCanvas.height - height - 10,
+                    width: 20,
                     height: height
                 });
                 lastObstacleTime = now;
@@ -940,9 +937,9 @@
                 // 碰撞检测
                 if (
                     dino.x < obstacles[i].x + obstacles[i].width &&
-                    dino.x + dino.width > obstacles[i].x &&
+                    dino.x + 40 > obstacles[i].x &&
                     dino.y < obstacles[i].y + obstacles[i].height &&
-                    dino.y + dino.height > obstacles[i].y
+                    dino.y + 60 > obstacles[i].y
                 ) {
                     endDinoGame();
                     return;
@@ -999,7 +996,7 @@
         function jump() {
             if (!dino.jumping && dinoGameRunning) {
                 dino.jumping = true;
-                dino.jumpVelocity = -15;
+                dino.jumpVelocity = -12;
             }
         }
         
