@@ -229,14 +229,6 @@
             height: 100%;
         }
 
-        #game-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
         .dino {
             position: absolute;
             bottom: 40px;
@@ -244,6 +236,19 @@
             width: 60px;
             height: 60px;
             z-index: 20;
+            background: #555;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .dino img {
+            width: 80%;
+            height: 80%;
+            object-fit: contain;
         }
 
         .obstacle {
@@ -255,6 +260,20 @@
             background: #e74c3c;
             border-radius: 5px;
             z-index: 10;
+        }
+
+        .cactus {
+            background: linear-gradient(to bottom, #27ae60, #2ecc71);
+            width: 25px;
+            height: 45px;
+            border-radius: 10px;
+        }
+
+        .bird {
+            background: linear-gradient(to bottom, #e74c3c, #e67e22);
+            width: 40px;
+            height: 30px;
+            border-radius: 50%;
         }
 
         .ground {
@@ -275,6 +294,37 @@
             background: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             opacity: 0.7;
+        }
+
+        /* 触摸控制按钮 */
+        .touch-controls {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .control-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .control-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         /* 游戏控制面板 */
@@ -396,6 +446,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin: 10px;
         }
 
         .key {
@@ -449,6 +500,16 @@
             .instructions .controls {
                 gap: 15px;
             }
+            
+            .touch-controls {
+                display: flex;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .touch-controls {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -472,7 +533,7 @@
         </div>
         <div class="nav-links">
             <a href="index.html">首页</a>
-            <a href="2.html">关于我</a>
+            <a href="paly.html">关于我</a>
             <a href="3.html">作品集</a>
             <a href="4.html">联系我</a>
             <a href="5.html">特别心意</a>
@@ -491,12 +552,20 @@
             <div class="game-section">
                 <div class="game-board">
                     <div id="game-container">
-                        <!-- 游戏元素将通过JS动态创建 -->
                         <div class="dino" id="dino">
-                            <img src="skl.jpg" alt="小恐龙" style="width:100%;height:100%;border-radius:50%;">
+                            <div class="dino-inner"></div>
                         </div>
                         <div class="ground" id="ground"></div>
-                        <canvas id="game-canvas"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 触摸控制按钮（移动端显示） -->
+                <div class="touch-controls">
+                    <div class="control-btn" id="jump-btn">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="control-btn" id="duck-btn">
+                        <i class="fas fa-arrow-down"></i>
                     </div>
                 </div>
 
@@ -538,6 +607,9 @@
                                 <div class="key-label">下蹲</div>
                             </div>
                         </div>
+                        <p style="text-align: center; margin-top: 15px; opacity: 0.9;">
+                            在移动设备上使用屏幕下方的触摸按钮控制
+                        </p>
                     </div>
                 </div>
             </div>
@@ -548,12 +620,15 @@
         // 游戏初始化
         const gameContainer = document.getElementById('game-container');
         const dino = document.getElementById('dino');
+        const ground = document.getElementById('ground');
         const scoreElement = document.getElementById('score');
         const highScoreElement = document.getElementById('high-score');
         const speedElement = document.getElementById('speed');
         const startButton = document.getElementById('start-btn');
         const pauseButton = document.getElementById('pause-btn');
         const resetButton = document.getElementById('reset-btn');
+        const jumpButton = document.getElementById('jump-btn');
+        const duckButton = document.getElementById('duck-btn');
         
         // 游戏状态变量
         let gameRunning = false;
@@ -583,26 +658,17 @@
             obstacle.classList.add('obstacle');
             obstacle.style.right = '-30px';
             
-            // 随机障碍物高度
-            const height = Math.random() > 0.7 ? 70 : 50;
-            obstacle.style.height = height + 'px';
-            obstacle.style.bottom = (height > 60 ? 35 : 40) + 'px';
-            
             // 随机障碍物类型（仙人掌或鸟）
             if (Math.random() > 0.5) {
-                obstacle.style.backgroundColor = '#27ae60';
-                obstacle.style.borderRadius = '50%';
-                obstacle.style.width = '40px';
-                obstacle.style.height = '30px';
-                obstacle.style.bottom = '100px';
-                obstacle.classList.add('bird');
+                // 仙人掌
+                obstacle.innerHTML = '<div class="cactus"></div>';
+                obstacle.style.bottom = '40px';
+                obstacle.style.height = '45px';
             } else {
-                // 仙人掌样式
-                const type = Math.floor(Math.random() * 3) + 1;
-                obstacle.style.backgroundColor = 'transparent';
-                obstacle.style.backgroundImage = 'linear-gradient(45deg, #27ae60 25%, #2ecc71 25%, #2ecc71 50%, #27ae60 50%, #27ae60 75%, #2ecc71 75%)';
-                obstacle.style.backgroundSize = '30px 30px';
-                obstacle.style.borderRadius = '0';
+                // 鸟
+                obstacle.innerHTML = '<div class="bird"></div>';
+                obstacle.style.bottom = (Math.random() > 0.5 ? 100 : 120) + 'px';
+                obstacle.style.height = '30px';
             }
             
             gameContainer.appendChild(obstacle);
@@ -617,19 +683,14 @@
                 obstacle.style.right = obstaclePos + 'px';
                 
                 // 碰撞检测
-                if (obstaclePos > 50 && obstaclePos < 90 && 
-                    parseInt(obstacle.style.bottom) <= position + 50) {
-                    if (!dino.classList.contains('duck') ||
-                        (dino.classList.contains('duck') && parseInt(obstacle.style.bottom) < 80)) {
-                        // 碰撞检测条件
-                        const dinoRect = dino.getBoundingClientRect();
-                        const obstacleRect = obstacle.getBoundingClientRect();
-                        
-                        if (dinoRect.right > obstacleRect.left && 
-                            dinoRect.left < obstacleRect.right &&
-                            dinoRect.bottom > obstacleRect.top) {
-                            gameOver();
-                        }
+                if (obstaclePos > 50 && obstaclePos < 90) {
+                    const dinoRect = dino.getBoundingClientRect();
+                    const obstacleRect = obstacle.getBoundingClientRect();
+                    
+                    if (dinoRect.right > obstacleRect.left && 
+                        dinoRect.left < obstacleRect.right &&
+                        dinoRect.bottom > obstacleRect.top) {
+                        gameOver();
                     }
                 }
                 
@@ -660,7 +721,6 @@
                 
                 dino.style.transition = 'none';
                 dino.classList.remove('duck');
-                dino.classList.add('jump');
                 
                 const jumpInterval = setInterval(() => {
                     if (gamePaused) return;
@@ -674,7 +734,6 @@
                         position = dinoBottom;
                         dino.style.bottom = position + 'px';
                         isJumping = false;
-                        dino.classList.remove('jump');
                         clearInterval(jumpInterval);
                     }
                 }, 20);
@@ -685,7 +744,8 @@
         function duck() {
             if (!isJumping && gameRunning && !gamePaused) {
                 isDucking = true;
-                dino.classList.add('duck');
+                dino.style.height = '40px';
+                dino.style.width = '70px';
             }
         }
         
@@ -693,7 +753,8 @@
         function standUp() {
             if (isDucking && gameRunning && !gamePaused) {
                 isDucking = false;
-                dino.classList.remove('duck');
+                dino.style.height = '60px';
+                dino.style.width = '60px';
             }
         }
         
@@ -750,11 +811,12 @@
             if (gameOverElement) gameContainer.removeChild(gameOverElement);
             
             // 重置小恐龙状态
-            dino.style.backgroundColor = '';
+            dino.style.backgroundColor = '#555';
             dino.style.transform = '';
             dino.style.bottom = dinoBottom + 'px';
+            dino.style.height = '60px';
+            dino.style.width = '60px';
             position = dinoBottom;
-            dino.classList.remove('jump', 'duck');
             
             // 重置游戏状态
             gameRunning = false;
@@ -824,18 +886,93 @@
             }
         });
         
-        startButton.addEventListener('click', startGame);
-        pauseButton.addEventListener('click', pauseGame);
-        resetButton.addEventListener('click', resetGame);
-        
-        // 触摸事件支持（移动设备）
-        dino.addEventListener('touchstart', (e) => {
+        // 触摸控制
+        jumpButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
             jump();
         });
         
+        duckButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            duck();
+        });
+        
+        duckButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            standUp();
+        });
+        
+        // 防止按钮长按
+        function preventLongPress(button) {
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+            });
+        }
+        
+        // 应用到所有触摸按钮
+        [jumpButton, duckButton].forEach(btn => {
+            preventLongPress(btn);
+        });
+        
+        startButton.addEventListener('click', startGame);
+        pauseButton.addEventListener('click', pauseGame);
+        resetButton.addEventListener('click', resetGame);
+        
         // 初始化游戏UI
         resetGame();
+        
+        // 创建小恐龙图像
+        const dinoInner = document.createElement('div');
+        dinoInner.style.width = '80%';
+        dinoInner.style.height = '80%';
+        dinoInner.style.background = 'linear-gradient(to bottom, #555, #333)';
+        dinoInner.style.borderRadius = '30% 30% 40% 40%';
+        dinoInner.style.position = 'relative';
+        
+        // 添加恐龙眼睛
+        const eye = document.createElement('div');
+        eye.style.position = 'absolute';
+        eye.style.top = '25%';
+        eye.style.right = '20%';
+        eye.style.width = '15%';
+        eye.style.height = '15%';
+        eye.style.backgroundColor = 'white';
+        eye.style.borderRadius = '50%';
+        dinoInner.appendChild(eye);
+        
+        // 添加恐龙眼珠
+        const pupil = document.createElement('div');
+        pupil.style.position = 'absolute';
+        pupil.style.top = '30%';
+        pupil.style.right = '30%';
+        pupil.style.width = '40%';
+        pupil.style.height = '40%';
+        pupil.style.backgroundColor = 'black';
+        pupil.style.borderRadius = '50%';
+        eye.appendChild(pupil);
+        
+        // 添加恐龙腿
+        const leg1 = document.createElement('div');
+        leg1.style.position = 'absolute';
+        leg1.style.bottom = '0';
+        leg1.style.left = '20%';
+        leg1.style.width = '15%';
+        leg1.style.height = '25%';
+        leg1.style.backgroundColor = '#444';
+        leg1.style.borderRadius = '5px';
+        dinoInner.appendChild(leg1);
+        
+        const leg2 = document.createElement('div');
+        leg2.style.position = 'absolute';
+        leg2.style.bottom = '0';
+        leg2.style.right = '20%';
+        leg2.style.width = '15%';
+        leg2.style.height = '25%';
+        leg2.style.backgroundColor = '#444';
+        leg2.style.borderRadius = '5px';
+        dinoInner.appendChild(leg2);
+        
+        dino.appendChild(dinoInner);
     </script>
 </body>
 </html>
