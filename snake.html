@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>娱乐中心 | 贪吃蛇</title>
+    <title>未明 | 贪吃蛇</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -21,7 +21,7 @@
             position: relative;
         }
         
-        /* 气泡动画 */
+        /* 气泡动画 - 根据第一张图 */
         .bubbles {
             position: fixed;
             top: 0;
@@ -56,7 +56,7 @@
             }
         }
         
-        /* 导航栏 */
+        /* 导航栏 - 根据第二张图 */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -81,15 +81,15 @@
         
         .nav-links {
             display: flex;
-            gap: 20px;
+            gap: 1px;
         }
         
         .nav-links a {
             color: #eaefff;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.2rem;
-            padding: 8px 15px;
+            font-size: 1.8rem;
+            padding: 10px 50px;
             transition: all 0.3s ease;
         }
         
@@ -344,8 +344,8 @@
             }
             
             .nav-links a {
-                font-size: 0.9rem;
-                padding: 6px 8px;
+                font-size: 1rem;
+                padding: 8px 10px;
             }
             
             .game-wrapper {
@@ -376,11 +376,45 @@
                 width: 300px;
                 height: 300px;
             }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 8px 12px;
+            }
+        }
+        
+        /* 移动控制按钮 */
+        .mobile-controls {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            width: 240px;
+        }
+        
+        .mobile-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1.5rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: grid;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 气泡背景 -->
+    <!-- 气泡背景 - 根据第一张图 -->
     <div class="bubbles">
         <div class="bubble" style="width: 40px; height: 40px; left: 10%; animation-duration: 8s;"></div>
         <div class="bubble" style="width: 60px; height: 60px; left: 20%; animation-duration: 10s;"></div>
@@ -391,15 +425,15 @@
         <div class="bubble" style="width: 35px; height: 35px; left: 90%; animation-duration: 8.5s;"></div>
     </div>
     
-    <!-- 导航栏 -->
+    <!-- 导航栏 - 根据第三张图 -->
     <nav class="navbar">
         <div class="logo">
-            <i class="fas fa-game"></i>
-            <span>娱乐中心 | 贪吃蛇</span>
+            <i class="fas fa-heart"></i>
+            <span>未明 | 关于我</span>
         </div>
         <div class="nav-links">
             <a href="index.html">首页</a>
-            <a href="2">关于我</a>
+            <a href=2#">关于我</a>
             <a href="3.html">作品集</a>
             <a href="4.html">联系我</a>
             <a href="5.html">特别心意</a>
@@ -415,6 +449,16 @@
             <div class="game-container">
                 <!-- 游戏画布 -->
                 <canvas id="game-board" width="450" height="450"></canvas>
+                
+                <!-- 移动控制按钮（仅移动设备显示） -->
+                <div class="mobile-controls">
+                    <button class="mobile-btn" id="mobile-up"><i class="fas fa-arrow-up"></i></button>
+                    <div></div>
+                    <button class="mobile-btn" id="mobile-pause"><i class="fas fa-pause"></i></button>
+                    <button class="mobile-btn" id="mobile-left"><i class="fas fa-arrow-left"></i></button>
+                    <button class="mobile-btn" id="mobile-down"><i class="fas fa-arrow-down"></i></button>
+                    <button class="mobile-btn" id="mobile-right"><i class="fas fa-arrow-right"></i></button>
+                </div>
                 
                 <!-- 游戏控制区 -->
                 <div class="game-controls">
@@ -457,6 +501,7 @@
                     <li>游戏速度越快，得分倍数越高</li>
                     <li>专家模式：蛇会穿墙，但速度极快</li>
                     <li>按空格键可在游戏进行中暂停/继续</li>
+                    <li>在移动设备上可使用屏幕按钮控制</li>
                 </ul>
             </div>
         </div>
@@ -466,7 +511,7 @@
     <div class="game-over" id="game-over">
         <div class="game-over-content">
             <h2><i class="fas fa-skull"></i> 游戏结束!</h2>
-            <p>您的贪吃蛇撞到障碍物了</p>
+            <p id="game-over-message">您的贪吃蛇撞到障碍物了</p>
             <div class="final-score">最终得分: <span id="final-score">0</span></div>
             <div class="controls-row">
                 <button id="restart-btn" class="btn play">
@@ -511,6 +556,14 @@
         const menuButton = document.getElementById('menu-btn');
         const gameOverElement = document.getElementById('game-over');
         const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        const gameOverMessage = document.getElementById('game-over-message');
+        
+        // 移动控制按钮
+        const mobileUpButton = document.getElementById('mobile-up');
+        const mobileDownButton = document.getElementById('mobile-down');
+        const mobileLeftButton = document.getElementById('mobile-left');
+        const mobileRightButton = document.getElementById('mobile-right');
+        const mobilePauseButton = document.getElementById('mobile-pause');
         
         // 初始化游戏
         function initGame() {
@@ -589,10 +642,7 @@
             
             // 检查碰撞 - 游戏结束条件
             if (
-                head.x < 0 || 
-                head.x >= gridWidth || 
-                head.y < 0 || 
-                head.y >= gridHeight ||
+                (!expertMode && (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight)) ||
                 snake.some(segment => segment.x === head.x && segment.y === head.y)
             ) {
                 endGame();
@@ -604,9 +654,120 @@
             
             // 检查是否吃到食物
             if (head.x === food.x && head.y === food.y) {
-                // 增加分数
-                score += expertMode ? 20 : 10;
+                // 增加分数（困难度越高分数越高）
+                let points = expertMode ? 20 : 
+                            (gameSpeed === 100 ? 15 : 
+                            (gameSpeed === 70 ? 20 : 10));
+                score += points;
                 updateScore();
                 
                 // 生成新食物
-     
+                generateFood();
+            } else {
+                // 没吃到食物，移除尾部
+                snake.pop();
+            }
+        }
+        
+        // 绘制游戏
+        function draw() {
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制背景网格
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            for (let x = 0; x < gridWidth; x++) {
+                for (let y = 0; y < gridHeight; y++) {
+                    if ((x + y) % 2 === 0) {
+                        ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+                    }
+                }
+            }
+            
+            // 绘制蛇
+            snake.forEach((segment, index) => {
+                // 蛇头
+                if (index === 0) {
+                    ctx.fillStyle = '#2ecc71'; // 蛇头颜色
+                    
+                    // 绘制蛇眼睛
+                    ctx.fillRect(
+                        segment.x * gridSize, 
+                        segment.y * gridSize, 
+                        gridSize, 
+                        gridSize
+                    );
+                    
+                    // 根据方向绘制眼睛
+                    ctx.fillStyle = '#000';
+                    if (direction === 'right') {
+                        ctx.fillRect(segment.x * gridSize + gridSize - 4, segment.y * gridSize + 3, 2, 2);
+                        ctx.fillRect(segment.x * gridSize + gridSize - 4, segment.y * gridSize + gridSize - 5, 2, 2);
+                    } else if (direction === 'left') {
+                        ctx.fillRect(segment.x * gridSize + 2, segment.y * gridSize + 3, 2, 2);
+                        ctx.fillRect(segment.x * gridSize + 2, segment.y * gridSize + gridSize - 5, 2, 2);
+                    } else if (direction === 'up') {
+                        ctx.fillRect(segment.x * gridSize + 3, segment.y * gridSize + 2, 2, 2);
+                        ctx.fillRect(segment.x * gridSize + gridSize - 5, segment.y * gridSize + 2, 2, 2);
+                    } else if (direction === 'down') {
+                        ctx.fillRect(segment.x * gridSize + 3, segment.y * gridSize + gridSize - 4, 2, 2);
+                        ctx.fillRect(segment.x * gridSize + gridSize - 5, segment.y * gridSize + gridSize - 4, 2, 2);
+                    }
+                } else {
+                    // 蛇身渐变
+                    const gradient = ctx.createLinearGradient(
+                        segment.x * gridSize, 
+                        segment.y * gridSize,
+                        segment.x * gridSize + gridSize,
+                        segment.y * gridSize + gridSize
+                    );
+                    gradient.addColorStop(0, '#3498db');
+                    gradient.addColorStop(1, '#2980b9');
+                    ctx.fillStyle = gradient;
+                    
+                    ctx.fillRect(
+                        segment.x * gridSize, 
+                        segment.y * gridSize, 
+                        gridSize, 
+                        gridSize
+                    );
+                }
+                
+                // 添加蛇身轮廓
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(
+                    segment.x * gridSize, 
+                    segment.y * gridSize, 
+                    gridSize, 
+                    gridSize
+                );
+            });
+            
+            // 绘制食物
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(
+                food.x * gridSize + gridSize/2, 
+                food.y * gridSize + gridSize/2, 
+                gridSize/2 - 1, 
+                0, 
+                Math.PI * 2
+            );
+            ctx.fill();
+            
+            // 添加光晕效果
+            ctx.shadowColor = '#e74c3c';
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // 食物内部细节
+            ctx.fillStyle = '#f1c40f';
+            ctx.beginPath();
+            ctx.arc(
+                food.x * gridSize + gridSize/2, 
+                food.y * gridSize + gridSize/2, 
+                gridSize/4, 
+                0, 
+               
