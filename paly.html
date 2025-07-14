@@ -1,85 +1,415 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>未明游戏中心</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未明 - 关于我</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* 导航栏样式（与之前章节完全一致） */
-        .main-nav {
-            background: #1a1a1a;
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
+        
+        body {
+            background: linear-gradient(135deg, #1e5799, #2989d8, #7db9e8);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 气泡动画 */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: rise linear infinite;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        @keyframes rise {
+            to {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* 导航栏 */
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 20px 50px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* 选项卡容器 */
-        .game-hub {
-            margin-top: 60px;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .tabs-header {
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
             display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            cursor: pointer;
+            align-items: center;
+            gap: 10px;
         }
-
-        .tab {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.1);
-            transition: all 0.3s;
+        
+        .logo i {
+            color: #64e3ff;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 主内容区 */
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
             text-align: center;
+            margin-bottom: 50px;
+            position: relative;
         }
-
-        .tab.active {
-            border-bottom: 3px solid #4CAF50;
-            font-weight: bold;
+        
+        .page-title h1 {
+            font-size: 3rem;
+            display: inline-block;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #1e5799, #2989d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
         }
-
-        /* 游戏卡片样式 */
-        .game-card {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+        
+        .page-title::before,
+        .page-title::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64e3ff, transparent);
+        }
+        
+        .page-title::before {
+            left: 0;
+        }
+        
+        .page-title::after {
+            right: 0;
+        }
+        
+        /* 信息卡片 */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #64e3ff, #7d7dff);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card-header i {
+            font-size: 2.5rem;
+            margin-right: 15px;
+            color: #64e3ff;
+        }
+        
+        .card-header h2 {
+            font-size: 1.8rem;
+        }
+        
+        .card-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .card-content li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .card-content li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #64e3ff;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        /* 时间线 */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, #64e3ff, #7d7dff);
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            width: 50%;
+            padding: 20px 40px;
+            box-sizing: border-box;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+        
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+        
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             border-radius: 15px;
-            padding: 20px;
-            margin: 15px;
-            transition: transform 0.3s;
-            cursor: pointer;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .timeline-content h3 {
+            color: #64e3ff;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        
+        .timeline-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: #64e3ff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(even)::after {
+            left: -10px;
+        }
+        
+        /* 目标卡片 */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        
+        .goal-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
             text-align: center;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        
+        .goal-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         }
-
-        /* 移动端适配 */
-        @media (max-width: 768px) {
-            .tabs-header {
-                flex-direction: column;
-                gap: 1rem;
+        
+        .goal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(100, 227, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #64e3ff;
+        }
+        
+        .goal-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #64e3ff;
+        }
+        
+        .goal-card p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 80px;
+            background: rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .timeline::before {
+                left: 30px;
             }
             
-            .tab {
+            .timeline-item {
                 width: 100%;
+                padding-left: 70px;
+                padding-right: 20px;
+                left: 0 !important;
+            }
+            
+            .timeline-item::after {
+                left: 20px !important;
+                right: auto;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 0.95rem;
+            }
+            
+            .page-title h1 {
+                font-size: 2.2rem;
+            }
+            
+            .page-title::before,
+            .page-title::after {
+                width: 20%;
+            }
+            
+            .info-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body>
-                 <  
+    <!-- 气泡背景 -->
+    <div class="bubbles"></div>
+    
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="logo">
