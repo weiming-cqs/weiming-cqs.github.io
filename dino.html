@@ -236,9 +236,16 @@
             width: 60px;
             height: 60px;
             z-index: 20;
+            background-image: url('xkl.png');
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center;
+            transition: transform 0.1s ease;
+        }
+
+        .dino.duck {
+            height: 40px;
+            width: 80px;
         }
 
         .obstacle {
@@ -254,11 +261,13 @@
         }
 
         .cactus {
-            width: 25px;
-            height: 45px;
+            background-image: url('xrz.png');
+            width: 30px;
+            height: 50px;
         }
 
         .bird {
+            background-image: url('fn.png');
             width: 40px;
             height: 30px;
             bottom: 100px !important;
@@ -636,9 +645,6 @@
         // 初始化游戏状态显示
         highScoreElement.textContent = highScore;
         
-        // 设置素材图片
-        dino.style.backgroundImage = "url('skl.png')";
-        
         // 生成随机障碍物
         function createObstacle() {
             if (!gameRunning || gamePaused) return;
@@ -651,15 +657,11 @@
             if (Math.random() > 0.5) {
                 // 仙人掌
                 obstacle.classList.add('cactus');
-                obstacle.style.backgroundImage = "url('xrz.jpg')";
                 obstacle.style.bottom = '40px';
-                obstacle.style.height = '45px';
             } else {
                 // 鸟
                 obstacle.classList.add('bird');
-                obstacle.style.backgroundImage = "url('fn.jpg')";
                 obstacle.style.bottom = (Math.random() > 0.5 ? 100 : 120) + 'px';
-                obstacle.style.height = '30px';
             }
             
             gameContainer.appendChild(obstacle);
@@ -673,12 +675,12 @@
                 obstaclePos += 7 * gameSpeed;
                 obstacle.style.right = obstaclePos + 'px';
                 
-                // 碰撞检测 - 改进版
+                // 碰撞检测
                 if (obstaclePos > 50 && obstaclePos < 90) {
                     const dinoRect = dino.getBoundingClientRect();
                     const obstacleRect = obstacle.getBoundingClientRect();
                     
-                    // 更精确的碰撞检测
+                    // 精确碰撞检测
                     if (
                         dinoRect.right > obstacleRect.left + 10 && 
                         dinoRect.left < obstacleRect.right - 10 &&
@@ -737,8 +739,7 @@
         function duck() {
             if (!isJumping && gameRunning && !gamePaused) {
                 isDucking = true;
-                dino.style.height = '40px';
-                dino.style.width = '70px';
+                dino.classList.add('duck');
             }
         }
         
@@ -746,8 +747,7 @@
         function standUp() {
             if (isDucking && gameRunning && !gamePaused) {
                 isDucking = false;
-                dino.style.height = '60px';
-                dino.style.width = '60px';
+                dino.classList.remove('duck');
             }
         }
         
@@ -805,8 +805,7 @@
             // 重置小恐龙状态
             dino.style.transform = '';
             dino.style.bottom = dinoBottom + 'px';
-            dino.style.height = '60px';
-            dino.style.width = '60px';
+            dino.classList.remove('duck');
             position = dinoBottom;
             
             // 重置游戏状态
