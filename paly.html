@@ -1,696 +1,176 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>未明娱乐中心 | 恐龙跑酷</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>未明游戏中心</title>
     <style>
-        /* 全局基础样式 - 基于第1张图 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1e5799, #2989d8, #7db9e8);
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-
-        /* 气泡背景动画 - 基于第1张图 */
-        .bubbles {
+        /* 导航栏样式（与之前章节完全一致） */
+        .main-nav {
+            background: #1a1a1a;
+            padding: 1rem 0;
             position: fixed;
             width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-            animation: rise 8s infinite ease-in;
-        }
-        @keyframes rise {
-            0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            50% { opacity: 0.7; }
-            100% { transform: translateY(-1000px) scale(1.5); opacity: 0; }
+            z-index: 1000;
         }
 
-        /* 导航栏样式 - 基于第2、3张图 */
-        .navbar {
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo i {
-            color: #64e3ff;
-            transition: transform 0.3s ease;
-        }
-        .logo:hover i {
-            transform: rotate(15deg);
-        }
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 8px 15px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        .nav-links a:not(.active):hover {
-            background: rgba(100, 227, 255, 0.3);
-            transform: translateY(-3px);
-        }
-        .nav-links a.active {
-            background: rgba(100, 227, 255, 0.5);
-            transform: translateY(-3px);
-            box-shadow: 0 0 15px rgba(100, 227, 255, 0.7);
-        }
-        .nav-links a.active::after {
-            content: "";
-            position: absolute;
-            bottom: -5px;
-            left: 25%;
-            width: 50%;
-            height: 3px;
-            background: #64e3ff;
-            border-radius: 3px;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            padding: 0 2rem;
         }
 
-        /* 主内容区与页面标题 */
-        .container {
+        /* 选项卡容器 */
+        .game-hub {
+            margin-top: 60px;
+            padding: 2rem;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
-        }
-        .page-title {
-            text-align: center;
-            margin: 30px 0 40px;
-            font-size: 2.8rem;
-            font-weight: 700;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            position: relative;
-            display: inline-block;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .page-title i {
-            margin-right: 15px;
-            color: #ffdd40;
-        }
-        .page-title::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 15%;
-            width: 70%;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, #64e3ff, #ffdd40, #64e3ff, transparent);
-            border-radius: 4px;
         }
 
-        /* 恐龙跑酷游戏容器 */
-        .game-card {
-            background: rgba(0, 30, 60, 0.4);
-            backdrop-filter: blur(8px);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            margin-bottom: 40px;
-        }
-        .game-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-        .game-header {
-            background: rgba(0, 0, 0, 0.25);
-            padding: 15px 20px;
-            text-align: center;
-            font-size: 1.8rem;
+        .tabs-header {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-        .game-content {
-            padding: 20px;
-            position: relative;
-        }
-        .game-canvas-container {
-            position: relative;
-            margin: 0 auto;
-            background: #0a1c2f;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
-        }
-        canvas.game-canvas {
-            display: block;
-            width: 100%;
-            height: 320px;
-        }
-        .controls {
-            margin-top: 25px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .btn {
-            background: linear-gradient(45deg, #64e3ff, #0077b6);
-            color: white;
-            border: none;
-            padding: 13px 30px;
-            font-size: 1.1rem;
-            border-radius: 50px;
+            gap: 2rem;
+            margin-bottom: 2rem;
             cursor: pointer;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            min-width: 160px;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0, 119, 182, 0.3);
-        }
-        .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 7px 20px rgba(0, 119, 182, 0.5);
-        }
-        .btn.game-playing {
-            background: linear-gradient(45deg, #ff6b6b, #d9534f);
-        }
-        .btn.game-playing:hover {
-            box-shadow: 0 7px 20px rgba(182, 0, 0, 0.4);
-        }
-        .instructions {
             text-align: center;
-            margin: 20px 0 10px;
-            font-size: 1rem;
-            opacity: 0.9;
-            line-height: 1.6;
         }
-        .score-container {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 1.2rem;
+
+        .tab.active {
+            border-bottom: 3px solid #4CAF50;
             font-weight: bold;
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
-        .score-container i {
-            color: #ffdd40;
-        }
-        .game-over {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            display: none;
-            z-index: 10;
-        }
-        .game-over h2 {
-            font-size: 2.8rem;
-            color: #ff6b6b;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+
+        /* 游戏卡片样式 */
+        .game-card {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px;
+            transition: transform 0.3s;
+            cursor: pointer;
             text-align: center;
         }
 
-        /* 移动端控制按钮 */
-        .mobile-controls {
-            display: none;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px;
-        }
-        .mobile-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: none;
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            transition: all 0.2s;
-        }
-        .mobile-btn:active {
-            transform: scale(0.9);
-            background: rgba(255, 255, 255, 0.3);
-        }
-        .jump-btn {
-            background: rgba(0, 200, 83, 0.3);
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* 响应式优化 */
-        @media (max-width: 900px) {
-            .navbar {
-                padding: 15px 20px;
-            }
-            .logo {
-                font-size: 1.5rem;
-            }
-            .nav-links {
-                gap: 10px;
-            }
-            .nav-links a {
-                font-size: 1rem;
-                padding: 6px 12px;
-            }
-            .page-title {
-                font-size: 2.2rem;
-                margin: 20px 0 30px;
-            }
-            .mobile-controls {
-                display: flex;
-            }
-            .controls {
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .tabs-header {
                 flex-direction: column;
-                gap: 12px;
-                align-items: center;
+                gap: 1rem;
             }
-            .btn {
+            
+            .tab {
                 width: 100%;
-                max-width: 300px;
-            }
-        }
-        @media (max-width: 600px) {
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px 10px;
-            }
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            .page-title {
-                font-size: 1.8rem;
-            }
-            .game-header {
-                font-size: 1.5rem;
-            }
-            .score-container {
-                top: 15px;
-                right: 15px;
-                font-size: 1rem;
-                padding: 8px 15px;
-            }
-            .game-over h2 {
-                font-size: 2rem;
-            }
-            .mobile-btn {
-                width: 65px;
-                height: 65px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 气泡背景 -->
-    <div class="bubbles" id="bubbles"></div>
-    
+                 <  
     <!-- 导航栏 -->
     <nav class="navbar">
         <div class="logo">
-            <i class="fas fa-gamepad"></i>
+            <i class="fas fa-user"></i>
             <span>未明 | 娱乐中心</span>
         </div>
         <div class="nav-links">
             <a href="index.html">首页</a>
-            <a href="#">关于我</a>
+            <a href="2" class="active">关于我</a>
             <a href="3.html">作品集</a>
             <a href="4.html">联系我</a>
             <a href="5.html">特别心意</a>
-            <a href="play.html" class="active">娱乐中心</a>
+            <a href="paly.html">娱乐中心</a>
         </div>
     </nav>
-
-    <!-- 主内容区 -->
-    <div class="container">
-        <!-- 页面标题 -->
-        <div class="page-title"><i class="fas fa-gamepad"></i> 恐龙跑酷挑战</div>
-
-        <!-- 恐龙跑酷游戏 -->
-        <div class="game-card">
-            <div class="game-header">
-                <i class="fas fa-running"></i> 小恐龙跑酷
-            </div>
-            <div class="game-content">
-                <div class="score-container" id="dinoScore">
-                    <i class="fas fa-trophy"></i> 得分: 0
-                </div>
-                <div class="game-canvas-container">
-                    <canvas id="dinoCanvas" class="game-canvas"></canvas>
-                    <div class="game-over" id="dinoGameOver">
-                        <h2><i class="fas fa-skull"></i> 游戏结束</h2>
-                        <p style="margin-bottom: 25px; font-size: 1.2rem;">最终得分: <span id="dinoFinalScore">0</span></p>
-                        <button class="btn" id="dinoRestart"><i class="fas fa-redo"></i> 重新开始</button>
-                    </div>
-                </div>
-                <div class="instructions">
-                    <p>按空格键或 ↑ 键跳跃，避开仙人掌障碍物！</p>
-                </div>
-                <div class="mobile-controls">
-                    <button class="mobile-btn jump-btn" id="dinoJump"><i class="fas fa-arrow-up"></i> 跳跃</button>
-                </div>
-                <div class="controls">
-                    <button class="btn" id="dinoBtn"><i class="fas fa-play"></i> 开始游戏</button>
-                    <button class="btn" id="dinoPause" style="display: none;"><i class="fas fa-pause"></i> 暂停游戏</button>
-                </div>
-            </div>
+    <!-- 游戏中心主内容 -->
+    <div class="game-hub">
+        <!-- 选项卡导航 -->
+        <div class="tabs-header">
+            <div class="tab active" data-tab="snake">贪吃蛇大作战</div>
+            <div class="tab" data-tab="dino">恐龙跑酷</div>
+            <div class="tab" data-tab="dots">点点点解谜</div>
         </div>
-    </div>
 
-    <div class="game-footer">
-        <p>© 2023 未明工作室 | 优化版恐龙跑酷</p>
+        <!-- 游戏卡片区 -->
+        <div class="game-grid active" id="snake">
+            <a href="snake.html" class="game-card">
+                <h3>经典贪吃蛇</h3>
+                <img src="snake-thumbnail.jpg" alt="贪吃蛇" class="game-thumbnail">
+                <p>多人在线竞技模式，全球实时排行榜</p>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    <i class="far fa-star"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="game-grid hidden" id="dino">
+            <a href="dino.html" class="game-card">
+                <h3>恐龙跑酷</h3>
+                <img src="dino-thumbnail.jpg" alt="小恐龙" class="game-thumbnail">
+                <p>动态地形生成系统，沙盒模式探索</p>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="game-grid hidden" id="dots">
+            <a href="dots.html" class="game-card">
+                <h3>1</h3>
+                <img src="dots-thumbnail.jpg" alt="1" class="game-thumbnail">
+                <p>1</p>
+                <div class="rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                </div>
+            </a>
+        </div>
     </div>
 
     <script>
-        // 气泡生成
-        function createBubbles() {
-            const container = document.getElementById('bubbles');
-            const bubbleCount = Math.floor(window.innerWidth / 15);
-            
-            for (let i = 0; i < bubbleCount; i++) {
-                const bubble = document.createElement('div');
-                bubble.classList.add('bubble');
-                bubble.style.left = Math.random() * 100 + 'vw';
-                bubble.style.animationDuration = (Math.random() * 5 + 8) + 's';
-                bubble.style.animationDelay = (Math.random() * 5) + 's';
-                bubble.style.width = bubble.style.height = (Math.random() * 30 + 10) + 'px';
-                container.appendChild(bubble);
-            }
-        }
-
-        // 恐龙跑酷游戏核心逻辑
-        const dinoCanvas = document.getElementById('dinoCanvas');
-        const dinoCtx = dinoCanvas.getContext('2d');
-        const dinoBtn = document.getElementById('dinoBtn');
-        const dinoPause = document.getElementById('dinoPause');
-        const dinoRestart = document.getElementById('dinoRestart');
-        const dinoGameOver = document.getElementById('dinoGameOver');
-        const dinoScore = document.getElementById('dinoScore');
-        const dinoFinalScore = document.getElementById('dinoFinalScore');
-        const dinoJumpBtn = document.getElementById('dinoJump');
-
-        // 游戏变量
-        const dino = {
-            x: 50,
-            y: dinoCanvas.height - 100, // 缩小恐龙高度（原80→60）
-            width: 40,                 // 缩小恐龙宽度（原60→40）
-            jumping: false,
-            jumpVelocity: 0,
-            groundY: dinoCanvas.height - 100
-        };
-
-        let obstacles = [];
-        let dinoGameRunning = false;
-        let dinoGameLoop;
-        let dinoScoreValue = 0;
-        let gameSpeed = 5;
-        let frameCount = 0;
-        let lastObstacleTime = 0;
-        const obstacleInterval = 1500; // 障碍物生成间隔
-
-        // 初始化游戏
-        function initDino() {
-            dino.y = dino.groundY;
-            dino.jumping = false;
-            dino.jumpVelocity = 0;
-            obstacles = [];
-            dinoScoreValue = 0;
-            gameSpeed = 5;
-            frameCount = 0;
-            lastObstacleTime = 0;
-            dinoGameRunning = true;
-            dinoGameOver.style.display = 'none';
-            dinoScore.style.display = 'flex';
-            dinoScore.innerHTML = "<i class='fas fa-trophy'></i> 得分: 0";
-            drawDino();
-        }
-
-        // 绘制优化后的恐龙（更可爱、更小）
-        function drawDino() {
-            dinoCtx.clearRect(0, 0, dinoCanvas.width, dinoCanvas.height);
-            
-            // 地面
-            dinoCtx.fillStyle = '#555';
-            dinoCtx.fillRect(0, dinoCanvas.height - 10, dinoCanvas.width, 10);
-            
-            // 云朵背景
-            dinoCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-            dinoCtx.fillRect(100 - (frameCount/10) % dinoCanvas.width, 50, 80, 25);
-            dinoCtx.fillRect(300 - (frameCount/8) % dinoCanvas.width, 90, 100, 30);
-            dinoCtx.fillRect(500 - (frameCount/12) % dinoCanvas.width, 70, 60, 20);
-
-            // 恐龙身体（卡通化设计）
-            dinoCtx.fillStyle = '#4CAF50';
-            dinoCtx.shadowColor = '#4CAF50';
-            dinoCtx.shadowBlur = 10;
-
-            // 身体（圆形）
-            dinoCtx.beginPath();
-            dinoCtx.arc(dino.x + 20, dino.y + 20, 20, 0, Math.PI * 2);
-            dinoCtx.fill();
-
-            // 头部（小圆形）
-            dinoCtx.beginPath();
-            dinoCtx.arc(dino.x + 40, dino.y + 15, 15, 0, Math.PI * 2);
-            dinoCtx.fill();
-
-            // 眼睛（大眼睛）
-            dinoCtx.fillStyle = 'white';
-            dinoCtx.beginPath();
-            dinoCtx.arc(dino.x + 45, dino.y + 12, 4, 0, Math.PI * 2);
-            dinoCtx.fill();
-
-            dinoCtx.fillStyle = 'black';
-            dinoCtx.beginPath();
-            dinoCtx.arc(dino.x + 46, dino.y + 12, 2, 0, Math.PI * 2);
-            dinoCtx.fill();
-
-            // 嘴巴（微笑）
-            dinoCtx.strokeStyle = '#E91E63';
-            dinoCtx.lineWidth = 2;
-            dinoCtx.beginPath();
-            dinoCtx.arc(dino.x + 45, dino.y + 18, 5, 0.2, Math.PI * 0.8);
-            dinoCtx.stroke();
-
-            // 腿（细腿）
-            dinoCtx.fillStyle = '#4CAF50';
-            dinoCtx.fillRect(dino.x + 10, dino.y + 35, 8, 25);
-            dinoCtx.fillRect(dino.x + 25, dino.y + 35, 8, 25);
-
-            // 尾巴（小三角）
-            dinoCtx.beginPath();
-            dinoCtx.moveTo(dino.x, dino.y + 20);
-            dinoCtx.lineTo(dino.x - 10, dino.y + 15);
-            dinoCtx.lineTo(dino.x - 10, dino.y + 25);
-            dinoCtx.closePath();
-            dinoCtx.fill();
-
-            dinoCtx.shadowBlur = 0;
-
-            // 障碍物（仙人掌）
-            dinoCtx.fillStyle = '#2E7D32';
-            for (let obstacle of obstacles) {
-                // 仙人掌主体
-                dinoCtx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        // 选项卡切换逻辑
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.game-grid').forEach(g => g.classList.add('hidden'));
                 
-                // 仙人掌刺（简化）
-                dinoCtx.beginPath();
-                dinoCtx.moveTo(obstacle.x + obstacle.width/2, obstacle.y);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 - 8, obstacle.y - 12);
-                dinoCtx.lineTo(obstacle.x + obstacle.width/2 + 8, obstacle.y - 12);
-                dinoCtx.closePath();
-                dinoCtx.fill();
-            }
-        }
-
-        // 更新游戏状态
-        function updateDino() {
-            const now = Date.now();
-            frameCount++;
-            dinoScoreValue += 0.1;
-            dinoScore.innerHTML = `<i class="fas fa-trophy"></i> 得分: ${Math.floor(dinoScoreValue)}`;
-
-            // 游戏加速
-            if (frameCount % 600 === 0 && gameSpeed < 12) {
-                gameSpeed += 0.5;
-            }
-
-            // 跳跃逻辑
-            if (dino.jumping) {
-                dino.y += dino.jumpVelocity;
-                dino.jumpVelocity += 0.6; // 重力
-                
-                if (dino.y > dino.groundY) {
-                    dino.y = dino.groundY;
-                    dino.jumping = false;
-                }
-            }
-
-            // 障碍物生成（时间控制）
-            if (now - lastObstacleTime > obstacleInterval && obstacles.length < 3) {
-                const height = 40 + Math.random() * 40; // 缩小障碍物高度
-                obstacles.push({
-                    x: dinoCanvas.width,
-                    y: dinoCanvas.height - height - 10,
-                    width: 20,
-                    height: height
-                });
-                lastObstacleTime = now;
-            }
-
-            // 障碍物移动与碰撞检测
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                obstacles[i].x -= gameSpeed;
-
-                // 碰撞检测（调整碰撞区域）
-                if (
-                    dino.x < obstacles[i].x + obstacles[i].width &&
-                    dino.x + 40 > obstacles[i].x &&
-                    dino.y < obstacles[i].y + obstacles[i].height &&
-                    dino.y + 60 > obstacles[i].y
-                ) {
-                    endDinoGame();
-                    return;
-                }
-
-                // 移除屏幕外障碍物
-                if (obstacles[i].x + obstacles[i].width < 0) {
-                    obstacles.splice(i, 1);
-                }
-            }
-
-            drawDino();
-        }
-
-        // 游戏主循环
-        function dinoGameStep() {
-            if (dinoGameRunning) updateDino();
-        }
-
-        // 开始游戏
-        function startDinoGame() {
-            initDino();
-            dinoBtn.style.display = 'none';
-            dinoPause.style.display = 'flex';
-            dinoGameLoop = setInterval(dinoGameStep, 16);
-        }
-
-        // 暂停游戏
-        function pauseDinoGame() {
-            if (dinoGameRunning) {
-                clearInterval(dinoGameLoop);
-                dinoGameRunning = false;
-                dinoPause.style.display = 'none';
-                dinoBtn.style.display = 'flex';
-                dinoBtn.innerHTML = '<i class="fas fa-play"></i> 继续游戏';
-            }
-        }
-
-        // 结束游戏
-        function endDinoGame() {
-            clearInterval(dinoGameLoop);
-            dinoGameRunning = false;
-            dinoFinalScore.textContent = Math.floor(dinoScoreValue);
-            dinoGameOver.style.display = 'flex';
-            dinoPause.style.display = 'none';
-            dinoBtn.style.display = 'flex';
-            dinoBtn.innerHTML = '<i class="fas fa-play"></i> 开始游戏';
-        }
-
-        // 键盘控制
-        document.addEventListener('keydown', (e) => {
-            if (e.key === ' ' || e.key === 'ArrowUp') {
-                jump();
-                e.preventDefault();
-            }
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.remove('hidden');
+            });
         });
 
-        // 移动端跳跃
-        dinoJumpBtn.addEventListener('click', jump);
-
-        // 按钮事件
-        dinoBtn.addEventListener('click', () => {
-            if (!dinoGameRunning) startDinoGame();
-            else pauseDinoGame();
+        // 移动端菜单控制（复用之前组件）
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        mobileMenu.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
         });
-        dinoPause.addEventListener('click', pauseDinoGame);
-        dinoRestart.addEventListener('click', startDinoGame);
-
-        // 页面加载初始化
-        window.addEventListener('load', () => {
-            createBubbles();
-            drawDino(); // 初始绘制
-        });
-
-        // 跳跃函数
-        function jump() {
-            if (!dino.jumping && dinoGameRunning) {
-                dino.jumping = true;
-                dino.jumpVelocity = -12; // 调整跳跃力度
-            }
-        }
     </script>
 </body>
 </html>
