@@ -236,19 +236,9 @@
             width: 60px;
             height: 60px;
             z-index: 20;
-            background: #555;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .dino img {
-            width: 80%;
-            height: 80%;
-            object-fit: contain;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .obstacle {
@@ -257,23 +247,21 @@
             right: -30px;
             width: 30px;
             height: 50px;
-            background: #e74c3c;
-            border-radius: 5px;
             z-index: 10;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
 
         .cactus {
-            background: linear-gradient(to bottom, #27ae60, #2ecc71);
             width: 25px;
             height: 45px;
-            border-radius: 10px;
         }
 
         .bird {
-            background: linear-gradient(to bottom, #e74c3c, #e67e22);
             width: 40px;
             height: 30px;
-            border-radius: 50%;
+            bottom: 100px !important;
         }
 
         .ground {
@@ -552,9 +540,7 @@
             <div class="game-section">
                 <div class="game-board">
                     <div id="game-container">
-                        <div class="dino" id="dino">
-                            <div class="dino-inner"></div>
-                        </div>
+                        <div class="dino" id="dino"></div>
                         <div class="ground" id="ground"></div>
                     </div>
                 </div>
@@ -650,6 +636,9 @@
         // 初始化游戏状态显示
         highScoreElement.textContent = highScore;
         
+        // 设置素材图片
+        dino.style.backgroundImage = "url('skl.jpg')";
+        
         // 生成随机障碍物
         function createObstacle() {
             if (!gameRunning || gamePaused) return;
@@ -661,12 +650,14 @@
             // 随机障碍物类型（仙人掌或鸟）
             if (Math.random() > 0.5) {
                 // 仙人掌
-                obstacle.innerHTML = '<div class="cactus"></div>';
+                obstacle.classList.add('cactus');
+                obstacle.style.backgroundImage = "url('xrz.jpg')";
                 obstacle.style.bottom = '40px';
                 obstacle.style.height = '45px';
             } else {
                 // 鸟
-                obstacle.innerHTML = '<div class="bird"></div>';
+                obstacle.classList.add('bird');
+                obstacle.style.backgroundImage = "url('fn.jpg')";
                 obstacle.style.bottom = (Math.random() > 0.5 ? 100 : 120) + 'px';
                 obstacle.style.height = '30px';
             }
@@ -682,14 +673,17 @@
                 obstaclePos += 7 * gameSpeed;
                 obstacle.style.right = obstaclePos + 'px';
                 
-                // 碰撞检测
+                // 碰撞检测 - 改进版
                 if (obstaclePos > 50 && obstaclePos < 90) {
                     const dinoRect = dino.getBoundingClientRect();
                     const obstacleRect = obstacle.getBoundingClientRect();
                     
-                    if (dinoRect.right > obstacleRect.left && 
-                        dinoRect.left < obstacleRect.right &&
-                        dinoRect.bottom > obstacleRect.top) {
+                    // 更精确的碰撞检测
+                    if (
+                        dinoRect.right > obstacleRect.left + 10 && 
+                        dinoRect.left < obstacleRect.right - 10 &&
+                        dinoRect.bottom > obstacleRect.top + 10
+                    ) {
                         gameOver();
                     }
                 }
@@ -720,7 +714,6 @@
                 velocity = 20;
                 
                 dino.style.transition = 'none';
-                dino.classList.remove('duck');
                 
                 const jumpInterval = setInterval(() => {
                     if (gamePaused) return;
@@ -773,7 +766,6 @@
             }
             
             // 显示游戏结束效果
-            dino.style.backgroundColor = '#e74c3c';
             dino.style.transform = 'rotate(90deg)';
             dino.style.transition = 'all 0.5s ease';
             
@@ -811,7 +803,6 @@
             if (gameOverElement) gameContainer.removeChild(gameOverElement);
             
             // 重置小恐龙状态
-            dino.style.backgroundColor = '#555';
             dino.style.transform = '';
             dino.style.bottom = dinoBottom + 'px';
             dino.style.height = '60px';
@@ -920,59 +911,6 @@
         
         // 初始化游戏UI
         resetGame();
-        
-        // 创建小恐龙图像
-        const dinoInner = document.createElement('div');
-        dinoInner.style.width = '80%';
-        dinoInner.style.height = '80%';
-        dinoInner.style.background = 'linear-gradient(to bottom, #555, #333)';
-        dinoInner.style.borderRadius = '30% 30% 40% 40%';
-        dinoInner.style.position = 'relative';
-        
-        // 添加恐龙眼睛
-        const eye = document.createElement('div');
-        eye.style.position = 'absolute';
-        eye.style.top = '25%';
-        eye.style.right = '20%';
-        eye.style.width = '15%';
-        eye.style.height = '15%';
-        eye.style.backgroundColor = 'white';
-        eye.style.borderRadius = '50%';
-        dinoInner.appendChild(eye);
-        
-        // 添加恐龙眼珠
-        const pupil = document.createElement('div');
-        pupil.style.position = 'absolute';
-        pupil.style.top = '30%';
-        pupil.style.right = '30%';
-        pupil.style.width = '40%';
-        pupil.style.height = '40%';
-        pupil.style.backgroundColor = 'black';
-        pupil.style.borderRadius = '50%';
-        eye.appendChild(pupil);
-        
-        // 添加恐龙腿
-        const leg1 = document.createElement('div');
-        leg1.style.position = 'absolute';
-        leg1.style.bottom = '0';
-        leg1.style.left = '20%';
-        leg1.style.width = '15%';
-        leg1.style.height = '25%';
-        leg1.style.backgroundColor = '#444';
-        leg1.style.borderRadius = '5px';
-        dinoInner.appendChild(leg1);
-        
-        const leg2 = document.createElement('div');
-        leg2.style.position = 'absolute';
-        leg2.style.bottom = '0';
-        leg2.style.right = '20%';
-        leg2.style.width = '15%';
-        leg2.style.height = '25%';
-        leg2.style.backgroundColor = '#444';
-        leg2.style.borderRadius = '5px';
-        dinoInner.appendChild(leg2);
-        
-        dino.appendChild(dinoInner);
     </script>
 </body>
 </html>
