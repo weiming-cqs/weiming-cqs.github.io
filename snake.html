@@ -228,6 +228,44 @@
             aspect-ratio: 1/1;
         }
 
+        /* 触摸控制按钮 - 移动设备可见 */
+        .touch-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            display: none; /* 默认隐藏，在媒体查询中显示 */
+        }
+
+        .direction-row {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .control-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
         /* 游戏控制面板 */
         .game-controls {
             display: flex;
@@ -382,6 +420,28 @@
             .btn {
                 min-width: 100px;
             }
+
+            /* 显示触摸控制按钮 */
+            .touch-controls {
+                display: flex;
+            }
+            
+            /* 调整游戏画布比例 */
+            #game-canvas {
+                aspect-ratio: 1/1.2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .direction-row {
+                gap: 30px;
+            }
         }
     </style>
 </head>
@@ -424,6 +484,16 @@
             <div class="game-section">
                 <div class="game-board">
                     <canvas id="game-canvas"></canvas>
+                    
+                    <!-- 触摸控制按钮（移动端显示） -->
+                    <div class="touch-controls">
+                        <div class="control-btn" id="up-btn">↑</div>
+                        <div class="direction-row">
+                            <div class="control-btn" id="left-btn">←</div>
+                            <div class="control-btn" id="right-btn">→</div>
+                        </div>
+                        <div class="control-btn" id="down-btn">↓</div>
+                    </div>
                 </div>
 
                 <div class="game-controls">
@@ -454,8 +524,9 @@
                     <div class="instructions">
                         <h3>游戏说明</h3>
                         <ul>
-                            <li>使用 <span class="key">方向键</span> 或 <span class="key">W/A/S/D</span> 控制蛇的移动方向</li>
-                            <li>吃到 <span style="color: #ff6b6b; font-weight: bold">红色食物</span> 增加蛇的长度和得分</li>
+                            <li>电脑端: 使用 <span class="key">方向键</span> 或 <span class="key">W/A/S/D</span> 控制</li>
+                            <li>手机端: 使用下方触摸按钮控制蛇的方向</li>
+                            <li>吃到 <span style="color: #ff6b6b; font-weight: bold">红色食物</span> 增加长度和得分</li>
                             <li>蛇撞到墙壁或自己的身体游戏结束</li>
                             <li>游戏速度会随着蛇的长度增加而变快</li>
                         </ul>
@@ -497,6 +568,12 @@
         const startButton = document.getElementById('start-btn');
         const pauseButton = document.getElementById('pause-btn');
         const resetButton = document.getElementById('reset-btn');
+        
+        // 触摸控制元素
+        const upButton = document.getElementById('up-btn');
+        const downButton = document.getElementById('down-btn');
+        const leftButton = document.getElementById('left-btn');
+        const rightButton = document.getElementById('right-btn');
         
         // 初始化游戏
         function initGame() {
@@ -764,6 +841,35 @@
                     if (direction !== 'left') nextDirection = 'right';
                     break;
             }
+        });
+        
+        // 触摸按钮控制
+        upButton.addEventListener('click', () => {
+            if (direction !== 'down') nextDirection = 'up';
+        });
+        
+        downButton.addEventListener('click', () => {
+            if (direction !== 'up') nextDirection = 'down';
+        });
+        
+        leftButton.addEventListener('click', () => {
+            if (direction !== 'right') nextDirection = 'left';
+        });
+        
+        rightButton.addEventListener('click', () => {
+            if (direction !== 'left') nextDirection = 'right';
+        });
+        
+        // 防止按钮长按
+        function preventLongPress(button) {
+            button.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+            });
+        }
+        
+        // 应用到所有触摸按钮
+        [upButton, downButton, leftButton, rightButton].forEach(btn => {
+            preventLongPress(btn);
         });
         
         // 按钮事件
