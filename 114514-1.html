@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>114514理论验证器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .input-group {
+            margin: 20px 0;
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e7f3ff;
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>114514理论验证器</h1>
+        <p>输入一个数字，将其拆分为使用114514的运算符表达式。</p>
+        <div class="input-group">
+            <input type="number" id="numberInput" placeholder="输入数字">
+            <button onclick="generateExpression()">生成表达式</button>
+        </div>
+        <div id="result" class="result"></div>
+        <div id="error" class="error"></div>
+    </div>
+
+    <script>
+        function generateExpression() {
+            const input = document.getElementById('numberInput');
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            const n = parseInt(input.value);
+
+            // 清除之前的结果
+            resultDiv.textContent = '';
+            errorDiv.textContent = '';
+
+            // 检查输入是否有效
+            if (isNaN(n)) {
+                errorDiv.textContent = '请输入有效数字！';
+                return;
+            }
+
+            if (Math.abs(n) > 100000) {
+                errorDiv.textContent = '数字绝对值太大，请输入不超过1000的数字！';
+                return;
+            }
+
+            // 生成表达式
+            let expression;
+            if (n === 0) {
+                expression = '114514 - 114514';
+            } else if (n > 0) {
+                // 创建分子部分：114514重复n次，用+连接
+                let numerator = '114514';
+                if (n > 1) {
+                    numerator = '(' + '114514'.repeat(n).split('').join('+') + ')';
+                }
+                expression = numerator + ' / 114514';
+            } else {
+                // n为负数
+                let absN = Math.abs(n);
+                let numerator = '114514';
+                if (absN > 1) {
+                    numerator = '(' + '114514'.repeat(absN).split('').join('+') + ')';
+                }
+                expression = '-(' + numerator + ' / 114514)';
+            }
+
+            // 显示结果
+            resultDiv.textContent = `${n} = ${expression}`;
+        }
+    </script>
+</body>
+</html>
