@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态视觉加密</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        canvas {
+            border: 2px solid #333;
+            background: #000;
+            margin: 20px 0;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        input, select {
+            padding: 8px;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>动态视觉加密演示</h1>
+        <p>隐藏的内容只有在像素块移动时才能识别</p>
+        
+        <div class="controls">
+            <label>隐藏的文字：</label>
+            <input type="text" id="hiddenText" value="HELLO" maxlength="10">
+            
+            <label>像素大小：</label>
+            <select id="pixelSize">
+                <option value="4">小</option>
+                <option value="6" selected>中</option>
+                <option value="8">大</option>
+            </select>
+            
+            <label>移动速度：</label>
+            <select id="speed">
+                <option value="2">慢</option>
+                <option value="4" selected>中</option>
+                <option value="6">快</option>
+            </select>
+            
+            <br><br>
+            <button id="startBtn">开始动画</button>
+            <button id="pauseBtn" disabled>暂停</button>
+            <button id="resetBtn">重置</button>
+        </div>
+        
+        <canvas id="pixelCanvas" width="600" height="300"></canvas>
+        
+        <div class="info">
+            <h3>效果说明：</h3>
+            <p>• <strong>运行状态</strong>：像素块快速移动时，可以看到隐藏的文字轮廓</p>
+            <p>• <strong>暂停状态</strong>：像素块静止，文字完全不可识别</p>
+            <p>• <strong>截图测试</strong>：尝试在暂停时截图，只能看到随机像素块</p>
+        </div>
+    </div>
+
+    <script>
+        class DynamicPixelMask {
+            constructor(canvasId) {
+                this.canvas = document.getElementById(canvasId);
+                this.ctx = this.canvas.getContext('2d');
+                this.width = this.canvas.width;
+                this.height = this.canvas.height;
+                
+                this.pixelSize = 6;
+                this.speed = 4;
+                this.isAnimating = false;
+                this.animationId = null;
+                
+                this.hiddenText = "HELLO";
+                this.textPixels = [];
+                this.backgroundPixels = [];
+                
+                this.init();
+            }
+            
+            init() {
+                this.generateTextPixels();
+                this.generateBackgroundPixels();
+                this.draw();
+                
+                // 事件监听
+                document.getElementById('startBtn').addEventListener('click', () => this.start());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.pause());
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                document.getElementById('hiddenText').addEventListener('input', (e) => {
+                    this.hiddenText = e.target.value.toUpperCase();
+                    this.reset();
+                });
+                document.getElementById('pixelSize').addEventListener('change', (e) => {
+                    this.pixelSize = parseInt(e.target.value);
+                    this.reset();
+                });
+                document.getElementById('speed').addEventListener('change', (e) => {
+                    this.speed = parseInt(e.target.value);
+                });
+            }
+            
+            generateTextPixels() {
+                this.textPixels = [];
+                
+                // 创建临时canvas来绘制文字并获取像素数据
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = this.width;
+                tempCanvas.height = this.height;
+                
+                // 绘制文字
+                tempCtx.fillStyle = 'white';
+                tempCtx.font = 'bold 120px Arial';
+                tempCtx.textAlign = 'center';
+                tempCtx.textBaseline = 'middle';
+                tempCtx.fillText(this.hiddenText, this.width / 2, this.height / 2);
+                
+                // 获取文字像素数据
+                const imageData = tempCtx.getImageData(0, 0, this.width, this.height);
+                const data = imageData.data;
+                
+                // 为文字区域生成像素块
+                for (let y = 0; y < this.height; y += this.pixelSize) {
+                    for (let x = 0; x < this.width; x += this.pixelSize) {
+                        const pixelIndex = (y * this.width + x) * 4;
+                        if (data[pixelIndex] > 128) { // 白色像素，属于文字
+                            this.textPixels.push({
+                                x: x + (Math.random() - 0.5) * 20, // 添加随机偏移
+                                y: y + (Math.random() - 0.5) * 20,
+                                targetX: x,
+                                targetY: y,
+                                color: Math.random() > 0.5 ? '#000000' : '#FFFFFF'
+                            });
+                        }
+                    }
+                }
+            }
+            
+            generateBackgroundPixels() {
+                this.backgroundPixels = [];
+                
+                // 为背景生成随机像素块
+                const cols = Math.floor(this.width / this.pixelSize);
+                const rows = Math.floor(this.height / this.pixelSize);
+                
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        this.backgroundPixels.push({
+                            x: col * this.pixelSize,
+                            y: row * this.pixelSize,
+                            targetX: col * this.pixelSize,
+                            targetY: row * this.pixelSize,
+                            color: Math.random() > 0.5 ? '#000000' : '#FFFFFF'
+                        });
+                    }
+                }
+            }
+            
+            start() {
+                if (this.isAnimating) return;
+                
+                this.isAnimating = true;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = false;
+                
+                this.animate();
+            }
+            
+            pause() {
+                this.isAnimating = false;
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+            }
+            
+            reset() {
+                this.pause();
+                this.generateTextPixels();
+                this.generateBackgroundPixels();
+                this.draw();
+            }
+            
+            animate() {
+                if (!this.isAnimating) return;
+                
+                // 移动文字像素块向目标位置
+                this.textPixels.forEach(pixel => {
+                    const dx = pixel.targetX - pixel.x;
+                    const dy = pixel.targetY - pixel.y;
+                    
+                    pixel.x += dx * 0.1 * this.speed;
+                    pixel.y += dy * 0.1 * this.speed;
+                    
+                    // 添加一些随机扰动
+                    pixel.x += (Math.random() - 0.5) * 2;
+                    pixel.y += (Math.random() - 0.5) * 2;
+                });
+                
+                // 移动背景像素块
+                this.backgroundPixels.forEach(pixel => {
+                    pixel.x += (Math.random() - 0.5) * this.speed;
+                    pixel.y += (Math.random() - 0.5) * this.speed;
+                    
+                    // 限制在画布范围内
+                    pixel.x = Math.max(0, Math.min(this.width - this.pixelSize, pixel.x));
+                    pixel.y = Math.max(0, Math.min(this.height - this.pixelSize, pixel.y));
+                });
+                
+                this.draw();
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+            draw() {
+                // 清空画布
+                this.ctx.fillStyle = '#000000';
+                this.ctx.fillRect(0, 0, this.width, this.height);
+                
+                // 绘制背景像素块
+                this.backgroundPixels.forEach(pixel => {
+                    this.ctx.fillStyle = pixel.color;
+                    this.ctx.fillRect(
+                        Math.round(pixel.x), 
+                        Math.round(pixel.y), 
+                        this.pixelSize, 
+                        this.pixelSize
+                    );
+                });
+                
+                // 绘制文字像素块
+                this.textPixels.forEach(pixel => {
+                    this.ctx.fillStyle = pixel.color;
+                    this.ctx.fillRect(
+                        Math.round(pixel.x), 
+                        Math.round(pixel.y), 
+                        this.pixelSize, 
+                        this.pixelSize
+                    );
+                });
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new DynamicPixelMask('pixelCanvas');
+        });
+    </script>
+</body>
+</html>
