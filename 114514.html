@@ -3,36 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>动态视觉加密</title>
+    <title>有序动态视觉加密</title>
     <style>
         body {
             margin: 0;
             padding: 20px;
             background: #f0f0f0;
             font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .container {
             max-width: 800px;
-            margin: 0 auto;
             text-align: center;
         }
         canvas {
             border: 2px solid #333;
             background: #000;
             margin: 20px 0;
+            display: block;
         }
         .controls {
             margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         button {
             padding: 10px 20px;
-            margin: 0 10px;
+            margin: 0 5px;
             font-size: 16px;
             cursor: pointer;
             background: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
+            transition: background 0.3s;
         }
         button:hover {
             background: #45a049;
@@ -45,6 +54,8 @@
             padding: 8px;
             margin: 0 10px;
             font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
         .info {
             margin-top: 20px;
@@ -53,70 +64,100 @@
             border-radius: 5px;
             text-align: left;
         }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status.running {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.paused {
+            background: #fff3cd;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>动态视觉加密演示</h1>
-        <p>隐藏的内容只有在像素块移动时才能识别</p>
+        <h1>有序动态视觉加密</h1>
+        <p>只有文字区域的像素块在移动，背景保持静止</p>
         
         <div class="controls">
-            <label>隐藏的文字：</label>
-            <input type="text" id="hiddenText" value="HELLO" maxlength="10">
+            <div>
+                <label>隐藏的文字：</label>
+                <input type="text" id="hiddenText" value="SECRET" maxlength="15">
+                
+                <label>像素大小：</label>
+                <select id="pixelSize">
+                    <option value="3">很小</option>
+                    <option value="4">小</option>
+                    <option value="5" selected>中</option>
+                    <option value="6">大</option>
+                </select>
+            </div>
             
-            <label>像素大小：</label>
-            <select id="pixelSize">
-                <option value="4">小</option>
-                <option value="6" selected>中</option>
-                <option value="8">大</option>
-            </select>
+            <div style="margin-top: 10px;">
+                <label>移动速度：</label>
+                <select id="speed">
+                    <option value="1">慢</option>
+                    <option value="2" selected>中</option>
+                    <option value="3">快</option>
+                </select>
+                
+                <label>移动幅度：</label>
+                <select id="amplitude">
+                    <option value="5">小</option>
+                    <option value="10" selected>中</option>
+                    <option value="15">大</option>
+                </select>
+            </div>
             
-            <label>移动速度：</label>
-            <select id="speed">
-                <option value="2">慢</option>
-                <option value="4" selected>中</option>
-                <option value="6">快</option>
-            </select>
-            
-            <br><br>
-            <button id="startBtn">开始动画</button>
-            <button id="pauseBtn" disabled>暂停</button>
-            <button id="resetBtn">重置</button>
+            <div style="margin-top: 15px;">
+                <button id="startBtn">开始动画</button>
+                <button id="pauseBtn" disabled>暂停</button>
+                <button id="resetBtn">重置</button>
+            </div>
         </div>
         
+        <div id="statusDisplay" class="status paused">状态: 已暂停 - 文字不可见</div>
         <canvas id="pixelCanvas" width="600" height="300"></canvas>
         
         <div class="info">
             <h3>效果说明：</h3>
-            <p>• <strong>运行状态</strong>：像素块快速移动时，可以看到隐藏的文字轮廓</p>
-            <p>• <strong>暂停状态</strong>：像素块静止，文字完全不可识别</p>
-            <p>• <strong>截图测试</strong>：尝试在暂停时截图，只能看到随机像素块</p>
+            <p>• <strong>运行状态</strong>：只有文字区域的像素块有序移动，形成可识别的文字轮廓</p>
+            <p>• <strong>暂停状态</strong>：所有像素块静止，文字完全不可识别</p>
+            <p>• <strong>截图测试</strong>：在暂停时截图，只能看到随机静态像素块</p>
         </div>
     </div>
 
     <script>
-        class DynamicPixelMask {
+        class OrderedPixelMask {
             constructor(canvasId) {
                 this.canvas = document.getElementById(canvasId);
                 this.ctx = this.canvas.getContext('2d');
                 this.width = this.canvas.width;
                 this.height = this.canvas.height;
                 
-                this.pixelSize = 6;
-                this.speed = 4;
+                this.pixelSize = 5;
+                this.speed = 2;
+                this.amplitude = 10; // 移动幅度
                 this.isAnimating = false;
                 this.animationId = null;
                 
-                this.hiddenText = "HELLO";
+                this.hiddenText = "SECRET";
                 this.textPixels = [];
                 this.backgroundPixels = [];
+                this.time = 0;
                 
                 this.init();
             }
             
             init() {
+                this.generateBackground();
                 this.generateTextPixels();
-                this.generateBackgroundPixels();
                 this.draw();
                 
                 // 事件监听
@@ -134,6 +175,27 @@
                 document.getElementById('speed').addEventListener('change', (e) => {
                     this.speed = parseInt(e.target.value);
                 });
+                document.getElementById('amplitude').addEventListener('change', (e) => {
+                    this.amplitude = parseInt(e.target.value);
+                });
+            }
+            
+            generateBackground() {
+                this.backgroundPixels = [];
+                
+                // 创建静态背景像素
+                const cols = Math.floor(this.width / this.pixelSize);
+                const rows = Math.floor(this.height / this.pixelSize);
+                
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        this.backgroundPixels.push({
+                            x: col * this.pixelSize,
+                            y: row * this.pixelSize,
+                            color: Math.random() > 0.5 ? '#000000' : '#FFFFFF'
+                        });
+                    }
+                }
             }
             
             generateTextPixels() {
@@ -161,34 +223,16 @@
                     for (let x = 0; x < this.width; x += this.pixelSize) {
                         const pixelIndex = (y * this.width + x) * 4;
                         if (data[pixelIndex] > 128) { // 白色像素，属于文字
+                            // 为每个文字像素块分配一个初始相位，使移动更有序
+                            const phase = Math.random() * Math.PI * 2;
+                            
                             this.textPixels.push({
-                                x: x + (Math.random() - 0.5) * 20, // 添加随机偏移
-                                y: y + (Math.random() - 0.5) * 20,
-                                targetX: x,
-                                targetY: y,
+                                baseX: x, // 基准位置（文字位置）
+                                baseY: y,
+                                phase: phase, // 相位，用于有序移动
                                 color: Math.random() > 0.5 ? '#000000' : '#FFFFFF'
                             });
                         }
-                    }
-                }
-            }
-            
-            generateBackgroundPixels() {
-                this.backgroundPixels = [];
-                
-                // 为背景生成随机像素块
-                const cols = Math.floor(this.width / this.pixelSize);
-                const rows = Math.floor(this.height / this.pixelSize);
-                
-                for (let row = 0; row < rows; row++) {
-                    for (let col = 0; col < cols; col++) {
-                        this.backgroundPixels.push({
-                            x: col * this.pixelSize,
-                            y: row * this.pixelSize,
-                            targetX: col * this.pixelSize,
-                            targetY: row * this.pixelSize,
-                            color: Math.random() > 0.5 ? '#000000' : '#FFFFFF'
-                        });
                     }
                 }
             }
@@ -200,6 +244,11 @@
                 document.getElementById('startBtn').disabled = true;
                 document.getElementById('pauseBtn').disabled = false;
                 
+                const statusDisplay = document.getElementById('statusDisplay');
+                statusDisplay.textContent = "状态: 运行中 - 文字可见";
+                statusDisplay.className = "status running";
+                
+                this.time = 0;
                 this.animate();
             }
             
@@ -208,44 +257,29 @@
                 document.getElementById('startBtn').disabled = false;
                 document.getElementById('pauseBtn').disabled = true;
                 
+                const statusDisplay = document.getElementById('statusDisplay');
+                statusDisplay.textContent = "状态: 已暂停 - 文字不可见";
+                statusDisplay.className = "status paused";
+                
                 if (this.animationId) {
                     cancelAnimationFrame(this.animationId);
                 }
+                
+                // 暂停时绘制一次，确保文字不可见
+                this.draw();
             }
             
             reset() {
                 this.pause();
+                this.generateBackground();
                 this.generateTextPixels();
-                this.generateBackgroundPixels();
                 this.draw();
             }
             
             animate() {
                 if (!this.isAnimating) return;
                 
-                // 移动文字像素块向目标位置
-                this.textPixels.forEach(pixel => {
-                    const dx = pixel.targetX - pixel.x;
-                    const dy = pixel.targetY - pixel.y;
-                    
-                    pixel.x += dx * 0.1 * this.speed;
-                    pixel.y += dy * 0.1 * this.speed;
-                    
-                    // 添加一些随机扰动
-                    pixel.x += (Math.random() - 0.5) * 2;
-                    pixel.y += (Math.random() - 0.5) * 2;
-                });
-                
-                // 移动背景像素块
-                this.backgroundPixels.forEach(pixel => {
-                    pixel.x += (Math.random() - 0.5) * this.speed;
-                    pixel.y += (Math.random() - 0.5) * this.speed;
-                    
-                    // 限制在画布范围内
-                    pixel.x = Math.max(0, Math.min(this.width - this.pixelSize, pixel.x));
-                    pixel.y = Math.max(0, Math.min(this.height - this.pixelSize, pixel.y));
-                });
-                
+                this.time += 0.05 * this.speed;
                 this.draw();
                 this.animationId = requestAnimationFrame(() => this.animate());
             }
@@ -255,23 +289,26 @@
                 this.ctx.fillStyle = '#000000';
                 this.ctx.fillRect(0, 0, this.width, this.height);
                 
-                // 绘制背景像素块
+                // 绘制静态背景像素块
                 this.backgroundPixels.forEach(pixel => {
                     this.ctx.fillStyle = pixel.color;
-                    this.ctx.fillRect(
-                        Math.round(pixel.x), 
-                        Math.round(pixel.y), 
-                        this.pixelSize, 
-                        this.pixelSize
-                    );
+                    this.ctx.fillRect(pixel.x, pixel.y, this.pixelSize, this.pixelSize);
                 });
                 
                 // 绘制文字像素块
                 this.textPixels.forEach(pixel => {
+                    // 计算当前偏移量 - 使用正弦波创建有序移动
+                    const offsetX = Math.sin(this.time + pixel.phase) * this.amplitude;
+                    const offsetY = Math.cos(this.time + pixel.phase * 1.5) * this.amplitude;
+                    
+                    // 计算当前位置
+                    const currentX = pixel.baseX + (this.isAnimating ? offsetX : 0);
+                    const currentY = pixel.baseY + (this.isAnimating ? offsetY : 0);
+                    
                     this.ctx.fillStyle = pixel.color;
                     this.ctx.fillRect(
-                        Math.round(pixel.x), 
-                        Math.round(pixel.y), 
+                        Math.round(currentX), 
+                        Math.round(currentY), 
                         this.pixelSize, 
                         this.pixelSize
                     );
@@ -281,7 +318,7 @@
         
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            new DynamicPixelMask('pixelCanvas');
+            new OrderedPixelMask('pixelCanvas');
         });
     </script>
 </body>
